@@ -63,11 +63,11 @@ def analyse_folder(sources, target_folder, wsize = 6, roi_approach = 'patches', 
 			## file
 			res = [bvps, timeES, bpmES]
 			with open(target_file, 'wb') as handle:
-    			pickle.dump(res, handle, protocol=pickle.HIGHEST_PROTOCOL)
+				pickle.dump(res, handle, protocol=pickle.HIGHEST_PROTOCOL)
 				
 				
 		except e:
-						print("An error occured analsing : " + file)
+			print("An error occured analsing : " + file)
 			print(e)
 			pass
 
