@@ -41,7 +41,7 @@ def analyse_folder(sources, target_folder, wsize = 6, roi_approach = 'patches', 
 
 			# run
 			pipe = Pipeline()          # object to execute the pipeline
-			bvps, timesES, bpmES = pipe.run_on_video(videoFileName,
+			bvps, timesES, bpmES = pipe.run_on_video(file,
 			                                        winsize=wsize, 
 			                                        roi_method='convexhull',
 			                                        roi_approach=roi_approach,
@@ -66,9 +66,8 @@ def analyse_folder(sources, target_folder, wsize = 6, roi_approach = 'patches', 
 				pickle.dump(res, handle, protocol=pickle.HIGHEST_PROTOCOL)
 				
 				
-		except e:
+		except:
 			print("An error occured analsing : " + file)
-			print(e)
 			pass
 
 
