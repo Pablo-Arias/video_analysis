@@ -17,7 +17,7 @@ def analyse_videos(sources, target_folder
 						, skip_frames=1, batch_size=900, num_workers=16
 						, pin_memory=False
 						, n_jobs = 12
-						, face_model = "retinaface",
+						, face_model = "retinaface"
 						, landmark_model = "mobilefacenet"
 						, au_model = 'xgb'
 						, emotion_model = "resmasknet"
