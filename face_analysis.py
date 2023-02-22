@@ -58,18 +58,17 @@ def analyse_videos(sources, target_folder
 		                                         , num_workers = num_workers
 		                                         , pin_memory = pin_memory
 		                                         , n_jobs = n_jobs
-		                                        )
-		        
+
 				video_prediction.to_csv(target_file)
 			else:
 				print(file + ' exists, skipping it')
-	        
+
 		except KeyboardInterrupt:
-			print("An error occured analsing : " + file)
-			print(e)
-			pass
+			print("Keyboard interrupt")
+			sys.exit(0)
+
 		except Exception as e:
-			print("An error occured analsing : " + file)
+			print("An error occured analysing : " + file)
 			print(e)
 			pass
 
