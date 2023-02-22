@@ -64,7 +64,11 @@ def analyse_videos(sources, target_folder
 			else:
 				print(file + ' exists, skipping it')
 	        
-		except e:
+		except KeyboardInterrupt:
+			print("An error occured analsing : " + file)
+			print(e)
+			pass
+		except Exception as e:
 			print("An error occured analsing : " + file)
 			print(e)
 			pass
