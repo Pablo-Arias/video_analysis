@@ -31,17 +31,18 @@ def analyse_folder(sources, target_folder, wsize = 6, roi_approach = 'patches', 
 	"""
 
 	for file in glob.glob(sources):
-		try:
-			file_tag = get_file_without_path(file)
-			target_file = target_folder + file_tag + ".pickle"
 
-			if exists(target_file):
-				print(file + ' exists, skipping it')
-				continue
+		wsize = 8 # seconds of video processed (with overlapping) for each estimate 
+		file_tag = get_file_without_path(file)
+		target_file = target_folder + file_tag + ".pickle"
 
-			# run
-			pipe = Pipeline()          # object to execute the pipeline
-			bvps, timesES, bpmES = pipe.run_on_video(file,
+		if exists(target_file):
+			print(target_file + ' exists, skipping it')
+			continue
+
+		# run
+		pipe = Pipeline()          # object to execute the pipeline
+		res = pipe.run_on_video(file,
 			                                        winsize=wsize, 
 			                                        roi_method='convexhull',
 			                                        roi_approach=roi_approach,
@@ -55,20 +56,21 @@ def analyse_folder(sources, target_folder, wsize = 6, roi_approach = 'patches', 
 			                                        cuda=True, 
 			                                        verb=True)
 
-			# ERRORS
-			RMSE, MAE, MAX, PCC, CCC, SNR = getErrors(bvps, fps, bpmES, bpmGT, timesES, timesGT)
-			printErrors(RMSE, MAE, MAX, PCC, CCC, SNR)
-			displayErrors(bpmES, bpmGT, timesES, timesGT)
+		# ERRORS
+		#RMSE, MAE, MAX, PCC, CCC, SNR = getErrors(bvps, fps, bpmES, bpmGT, timesES, timesGT)
+		#printErrors(RMSE, MAE, MAX, PCC, CCC, SNR)
+		#displayErrors(bpmES, bpmGT, timesES, timesGT)
 
-			## file
-			res = [bvps, timeES, bpmES]
-			with open(target_file, 'wb') as handle:
-				pickle.dump(res, handle, protocol=pickle.HIGHEST_PROTOCOL)
-				
-				
-		except:
-			print("An error occured analsing : " + file)
-			pass
+		## file
+		#print(bvps)
+		#print(timeES)
+		#print(bpmES)
+		#res = [bvps, timeES, bpmES]
+		with open(target_file, 'wb') as handle:
+			pickle.dump(res, handle, protocol=pickle.HIGHEST_PROTOCOL)
+#except:
+#print("An error occured analsing : " + file)
+#pass
 
 
 if __name__ == "__main__":
