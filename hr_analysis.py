@@ -68,12 +68,15 @@ def analyse_folder(sources, target_folder, wsize = 6, roi_approach = 'patches', 
 
 			with open(target_file, 'wb') as handle:
 				pickle.dump(res, handle, protocol=pickle.HIGHEST_PROTOCOL)
-		except
 			print("An error occured analsing : " + file)
-		
+
 		except KeyboardInterrupt:
 			print("interrupted")
 			sys.exit(0)
+
+		except Exception as e:
+			print(e)
+			pass
 
 
 if __name__ == "__main__":
