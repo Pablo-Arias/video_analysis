@@ -57,7 +57,7 @@ def analyse_videos(sources, target_folder
 		                                         , batch_size = batch_size
 		                                         , num_workers = num_workers
 		                                         , pin_memory = pin_memory
-		                                         , n_jobs = n_jobs
+		                                         , n_jobs = n_jobs)
 
 				video_prediction.to_csv(target_file)
 			else:
