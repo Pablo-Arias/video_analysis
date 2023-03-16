@@ -31,7 +31,6 @@ def analyse_folder(sources, target_folder, wsize = 6, roi_approach = 'patches', 
 	"""
 
 	for file in glob.glob(sources):
-		wsize = 8 # seconds of video processed (with overlapping) for each estimate 
 		file_tag = get_file_without_path(file)
 		target_file = target_folder + file_tag + ".pickle"
 
