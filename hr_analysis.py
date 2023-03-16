@@ -14,7 +14,7 @@ from pyVHR.utils.errors import getErrors, printErrors, displayErrors
 #Local Scripts
 from conversions import get_file_without_path
 
-def analyse_folder(sources, target_folder, wsize = 6, roi_approach = 'patches', bpm_est = 'clustering', method = 'cpu_CHROM', padlen=30):
+def analyse_folder(sources, target_folder, wsize = 6, roi_approach = 'patches', bpm_est = 'clustering', method = 'cpu_CHROM'):
 	"""
 		Analyse the source and save datatrame results in target folder
 		Sources has 
@@ -43,7 +43,6 @@ def analyse_folder(sources, target_folder, wsize = 6, roi_approach = 'patches', 
 			pipe = Pipeline()          # object to execute the pipeline
 			res = pipe.run_on_video(file,
 				                                        winsize=wsize, 
-														padlen = padlen,
 				                                        roi_method='convexhull',
 				                                        roi_approach=roi_approach,
 				                                        method=method,
