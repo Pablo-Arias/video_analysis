@@ -3,6 +3,7 @@ import os
 from os.path import exists
 import glob
 import pickle
+import sys
 
 #External Packages
 from pyVHR.analysis.pipeline import Pipeline
