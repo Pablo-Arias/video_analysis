@@ -2,19 +2,20 @@
 import os
 from os.path import exists
 import glob
+import sys
 
 #External Packages
 import pandas as pd
 import matplotlib.pyplot as plt
 from feat import Detector
-import multiprocessing
-from conversions import get_file_without_path
 
 #Local Scripts
 from conversions import get_file_without_path
 
 def analyse_videos(sources, target_folder
-						, skip_frames=1, batch_size=900, num_workers=16
+						, skip_frames=1
+						, batch_size=900
+						, num_workers=16
 						, pin_memory=False
 						, n_jobs = 12
 						, face_model = "retinaface"
@@ -26,8 +27,8 @@ def analyse_videos(sources, target_folder
 						):
 	"""
 		Analyse the source and save datatrame results in target folder
-		Sources has 
-		source = "data/sharpened_db/*/*.mp4"
+		Sources follows the sytax of glob.glob
+		sources = "data/sharpened_db/*/*.mp4"
 		target_folder = "au_analysis/"
 
 		analyse_videos(sources, target_folder)
