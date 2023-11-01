@@ -58,7 +58,14 @@ def analyse_videos(sources, target_folder
 		                                         , batch_size = batch_size
 		                                         , num_workers = num_workers
 		                                         , pin_memory = pin_memory
-		                                         , n_jobs = n_jobs)
+		                                         , n_jobs = n_jobs
+												, face_model = "retinaface"
+												, landmark_model = "mobilefacenet"
+												, au_model = 'xgb'
+												, emotion_model = "resmasknet"
+												, facepose_model = "img2pose"
+												, device = "cuda"												 
+												 )
 
 				video_prediction.to_csv(target_file)
 			else:
