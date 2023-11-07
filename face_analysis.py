@@ -73,11 +73,13 @@ def analyse_videos(sources, target_folder
 
 		except KeyboardInterrupt:
 			print("Keyboard interrupt")
+			os.remove(target_file)
 			sys.exit(0)
 
 		except Exception as e:
 			print("An error occured analysing : " + file)
 			print(e)
+			os.remove(target_file)
 			pass
 
 		
