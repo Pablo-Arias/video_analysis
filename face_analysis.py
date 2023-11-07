@@ -46,12 +46,17 @@ def analyse_videos(sources, target_folder
 	    facepose_model = facepose_model,
 	    device = device
 	)
+	try:
+		os.mkdir(target_folder)
+	except:
+		pass
 
 	for file in glob.glob(sources):
 		try:
 			file_tag = get_file_without_path(file)
 			target_file = target_folder + file_tag + ".csv"
 			if not exists(target_file):
+				open(target_file, "a")
 				print("Analysing "+  file + " ....")
 				video_prediction = detector.detect_video(file
 		                                         , skip_frames = skip_frames
@@ -62,8 +67,9 @@ def analyse_videos(sources, target_folder
 												 )
 
 				video_prediction.to_csv(target_file)
+			
 			else:
-				print(file + ' exists, skipping it')
+				print(file + 'analysis exists, skipping it')			
 
 		except KeyboardInterrupt:
 			print("Keyboard interrupt")
@@ -74,6 +80,7 @@ def analyse_videos(sources, target_folder
 			print(e)
 			pass
 
+		
 
 if __name__ == "__main__":
 	sources = "data/sharpened_db/*/*.mp4"
