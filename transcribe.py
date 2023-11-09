@@ -5,6 +5,7 @@ import glob
 from conversions import get_file_without_path
 from video_processing import extract_audio
 import whisper
+from transform_audio import extract_sentences_tags
 
 ## Parallel processing functions
 def transcribe_file(file, transcription_path="transcribed/", audio_path= "extracted_audio/", model_type= "large", language="English", fp16=True):
@@ -69,5 +70,3 @@ def transcribe_parallel(sources, transcription_path="transcribed/", audio_path="
                                                , repeat(fp16)
                                                ))
 
-if __name__ == '__main__':
-    transcribe_parallel()
