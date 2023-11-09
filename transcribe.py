@@ -11,7 +11,7 @@ from transform_audio import extract_sentences_tags
 def transcribe_video_file(file, transcription_path="transcribed/", audio_path= "extracted_audio/", model_type= "large", language="English", fp16=True):
     print("Analysing : " + file)
     
-
+    file_tag = get_file_without_path(file)
     target_path = transcription_path + file_tag + ".txt"
     if os.path.isfile(target_path):
         print("Skipping this file because it exists already  : " + target_path)
@@ -41,6 +41,7 @@ def transcribe_wav_file(file, transcription_path="transcribed/", audio_path= "ex
     print("Analysing : " + file)
     
 
+    file_tag = get_file_without_path(file)
     target_path = transcription_path + file_tag + ".txt"
     if os.path.isfile(target_path):
         print("Skipping this file because it exists already  : " + target_path)
