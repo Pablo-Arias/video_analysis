@@ -7,6 +7,7 @@ from video_processing import extract_audio
 import whisper
 from transform_audio import extract_sentences_tags
 
+
 ## Parallel processing functions
 def transcribe_video_file(file, transcription_path="transcribed/", audio_path= "extracted_audio/", model_type= "large", language="English", fp16=True):
     print("Analysing : " + file)
@@ -29,6 +30,39 @@ def transcribe_video_file(file, transcription_path="transcribed/", audio_path= "
     model = whisper.load_model(model_type)
     result = model.transcribe(audio, fp16=fp16, language=language)
     output = result["text"]
+    print(output)
+    
+    #Write results
+    text_file = open(target_path, "w")
+    text_file.write(output)
+    text_file.close()
+
+
+def transcribe_video_file_time_stamps(file, transcription_path="transcribed/", audio_path= "extracted_audio/", model_type= "large", language="English", fp16=True, device="cpu"):
+    import whisper_timestamped as whisper
+    import json
+
+    print("Analysing : " + file)
+    
+    file_tag = get_file_without_path(file)
+    target_path = transcription_path + file_tag + ".txt"
+    if os.path.isfile(target_path):
+        print("Skipping this file because it exists already  : " + target_path)
+        return
+    
+    #Create empty results file, to say that we are in the process of anlysing it
+    open(target_path, "a")
+
+    #Extract audio
+    file_tag = get_file_without_path(file)
+    audio_file = audio_path + file_tag+".wav"
+    extract_audio(file, audio_file)
+    
+    #Speech to text
+    audio = whisper.load_audio(audio_file)
+    model = whisper.load_model(model_type, device=device)
+    result = whisper.transcribe(model, audio, language="fr")
+    output = json.dumps(result, indent = 2, ensure_ascii = False)
     print(output)
     
     #Write results
@@ -61,6 +95,37 @@ def transcribe_wav_file(file, transcription_path="transcribed/", audio_path= "ex
     text_file.write(output)
     text_file.close()
 
+
+def transcribe_parallel_time_stamps(sources, transcription_path="transcribed/", audio_path="extracted_audio/", model_type="large", language="English", fp16=False, device="cpu"):
+    """
+    source folder should be in the shape of glob.glob
+    audio_path : is where the audio will be stored after extraction
+    Here for more details : https://github.com/openai/whisper
+
+    Usage example:
+        Add description here
+    """
+    try:
+        os.mkdir(transcription_path)
+        os.mkdir(audio_path)
+    except:
+        pass
+
+    import multiprocessing
+    from itertools import repeat
+    
+    pool_obj = multiprocessing.Pool()
+    sources     = glob.glob(sources)
+    
+    pool_obj.starmap(transcribe_video_file_time_stamps, zip(sources
+                                               , repeat(transcription_path)
+                                               , repeat(audio_path)
+                                               , repeat(model_type)
+                                               , repeat(language)
+                                               , repeat(fp16)
+                                               , repeat(device)
+                                               ))
+
 def transcribe_parallel(sources, transcription_path="transcribed/", audio_path="extracted_audio/", model_type="large", language="English", fp16=False):
     """
     source folder should be in the shape of glob.glob
@@ -85,9 +150,9 @@ def transcribe_parallel(sources, transcription_path="transcribed/", audio_path="
     from itertools import repeat
     
     pool_obj = multiprocessing.Pool()
-    a_args     = glob.glob(sources)
+    sources     = glob.glob(sources)
     
-    pool_obj.starmap(transcribe_wav_file, zip(a_args
+    pool_obj.starmap(transcribe_video_file, zip(sources
                                                , repeat(transcription_path)
                                                , repeat(audio_path)
                                                , repeat(model_type)
