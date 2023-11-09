@@ -8,7 +8,7 @@ import whisper
 from transform_audio import extract_sentences_tags
 
 ## Parallel processing functions
-def transcribe_file(file, transcription_path="transcribed/", audio_path= "extracted_audio/", model_type= "large", language="English", fp16=True):
+def transcribe_video_file(file, transcription_path="transcribed/", audio_path= "extracted_audio/", model_type= "large", language="English", fp16=True):
     print("Analysing : " + file)
     
 
@@ -24,6 +24,30 @@ def transcribe_file(file, transcription_path="transcribed/", audio_path= "extrac
     file_tag = get_file_without_path(file)
     audio = audio_path + file_tag+".wav"
     extract_audio(file, audio)
+    
+    #Speech to text
+    model = whisper.load_model(model_type)
+    result = model.transcribe(audio, fp16=fp16, language=language)
+    output = result["text"]
+    print(output)
+    
+    #Write results
+    text_file = open(target_path, "w")
+    text_file.write(output)
+    text_file.close()
+
+
+def transcribe_wav_file(file, transcription_path="transcribed/", audio_path= "extracted_audio/", model_type= "large", language="English", fp16=True):
+    print("Analysing : " + file)
+    
+
+    target_path = transcription_path + file_tag + ".txt"
+    if os.path.isfile(target_path):
+        print("Skipping this file because it exists already  : " + target_path)
+        return
+    
+    #Create empty results file, to say that we are in the process of anlysing it
+    open(target_path)
     
     #Speech to text
     model = whisper.load_model(model_type)
@@ -62,7 +86,7 @@ def transcribe_parallel(sources, transcription_path="transcribed/", audio_path="
     pool_obj = multiprocessing.Pool()
     a_args     = glob.glob(sources)
     
-    pool_obj.starmap(transcribe_file, zip(a_args
+    pool_obj.starmap(transcribe_wav_file, zip(a_args
                                                , repeat(transcription_path)
                                                , repeat(audio_path)
                                                , repeat(model_type)
