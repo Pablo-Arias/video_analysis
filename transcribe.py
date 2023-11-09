@@ -48,7 +48,7 @@ def transcribe_wav_file(file, transcription_path="transcribed/", audio_path= "ex
         return
     
     #Create empty results file, to say that we are in the process of anlysing it
-    open(target_path)
+    open(target_path, "a")
     
     #Speech to text
     model = whisper.load_model(model_type)
