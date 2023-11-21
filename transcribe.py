@@ -19,7 +19,7 @@ def transcribe_video_file(file, transcription_path="transcribed/", audio_path= "
         return
     
     #Create empty results file, to say that we are in the process of anlysing it
-    open(target_path)
+    open(target_path, "a")
 
     #Extract audio
     file_tag = get_file_without_path(file)
