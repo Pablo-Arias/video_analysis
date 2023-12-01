@@ -9,7 +9,7 @@ from transform_audio import extract_sentences_tags
 
 
 ## Parallel processing functions
-def transcribe_video_file(file, transcription_path="transcribed/", audio_path= "extracted_audio/", model_type= "large", language="English", fp16=True):
+def transcribe_video_file(file, transcription_path="transcribed/", audio_path= "extracted_audio/", model_type= "large", language="English", fp16=True, extract_audio=True):
     print("Analysing : " + file)
     
     file_tag = get_file_without_path(file)
@@ -22,9 +22,10 @@ def transcribe_video_file(file, transcription_path="transcribed/", audio_path= "
     open(target_path, "a")
 
     #Extract audio
-    file_tag = get_file_without_path(file)
-    audio = audio_path + file_tag+".wav"
-    extract_audio(file, audio)
+    if extract_audio:
+        file_tag = get_file_without_path(file)
+        audio = audio_path + file_tag+".wav"
+        extract_audio(file, audio)
     
     #Speech to text
     model = whisper.load_model(model_type)
@@ -97,7 +98,7 @@ def transcribe_wav_file(file, transcription_path="transcribed/", audio_path= "ex
     text_file.close()
 
 
-def transcribe_parallel_time_stamps(sources, transcription_path="transcribed/", audio_path="extracted_audio/", model_type="large", language="English", fp16=False, device="cpu"):
+def transcribe_parallel_time_stamps(sources, transcription_path="transcribed/", audio_path="extracted_audio/", model_type="large", language="English", fp16=False, device="cpu", extract_audio=True):
     """
     source folder should be in the shape of glob.glob
     audio_path : is where the audio will be stored after extraction
@@ -125,9 +126,10 @@ def transcribe_parallel_time_stamps(sources, transcription_path="transcribed/", 
                                                , repeat(language)
                                                , repeat(fp16)
                                                , repeat(device)
+                                               , repeat(extract_audio)
                                                ))
 
-def transcribe_parallel(sources, transcription_path="transcribed/", audio_path="extracted_audio/", model_type="large", language="English", fp16=False):
+def transcribe_parallel(sources, transcription_path="transcribed/", audio_path="extracted_audio/", model_type="large", language="English", fp16=False, extract_audio=True):
     """
     source folder should be in the shape of glob.glob
     audio_path : is where the audio will be stored after extraction
@@ -159,5 +161,6 @@ def transcribe_parallel(sources, transcription_path="transcribed/", audio_path="
                                                , repeat(model_type)
                                                , repeat(language)
                                                , repeat(fp16)
+                                               , repeat(extract_audio)
                                                ))
 
