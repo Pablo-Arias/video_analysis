@@ -111,66 +111,66 @@ def extract_tracked_frames(analysis
                             , my_dpi = 10
                             ):
 
-    #Create analysis folder
-    os.makedirs(target_folder, exist_ok=True)
+	#Create analysis folder
+	os.makedirs(target_folder, exist_ok=True)
 
 
-    #Load video
-    video_prediction = read_feat(analysis)
-    file = video_prediction.input[0]
-    video, audio, info = read_video(file, output_format="TCHW")
+	#Load video
+	video_prediction = read_feat(analysis)
+	file = video_prediction.input[0]
+	video, audio, info = read_video(file, output_format="TCHW")
 
-    frames = video_prediction.frame.values
+	frames = video_prediction.frame.values
 
-    for frame_nb in frames:
-        #Get image from video 
-        img = video[frame_nb, :, :]
+	for frame_nb in frames:
+		#Get image from video 
+		img = video[frame_nb, :, :]
 
-        #Plot original image
-        fig, face_ax = plt.subplots(frameon=False)
-        face_ax.imshow(img.permute([1, 2, 0]))
+		#Plot original image
+		fig, face_ax = plt.subplots(frameon=False)
+		face_ax.imshow(img.permute([1, 2, 0]))
 
-        #Plot face detection
-        if face_detection:
-            frame = video_prediction.loc[video_prediction["frame"] == frame_nb]
-            facebox = frame[video_prediction.facebox_columns].values[0]
-            rect = Rectangle(
-                (facebox[0], facebox[1]),
-                facebox[2],
-                facebox[3],
-                linewidth=face_detection_lw,
-                edgecolor=face_detect_color,
-                fill=False,
-                )
-            face_ax.add_patch(rect)
+		#Plot face detection
+		if face_detection:
+			frame = video_prediction.loc[video_prediction["frame"] == frame_nb]
+			facebox = frame[video_prediction.facebox_columns].values[0]
+			rect = Rectangle(
+				(facebox[0], facebox[1]),
+				facebox[2],
+				facebox[3],
+				linewidth=face_detection_lw,
+				edgecolor=face_detect_color,
+				fill=False,
+				)
+			face_ax.add_patch(rect)
 
-        #Pose
-        if pose:
-            face_ax = draw_facepose(
-                                pose=frame[video_prediction.facepose_columns].values[0],
-                                facebox=facebox,
-                                ax=face_ax,
-                                )
+		#Pose
+		if pose:
+			face_ax = draw_facepose(
+								pose=frame[video_prediction.facepose_columns].values[0],
+								facebox=facebox,
+								ax=face_ax,
+								)
 
-        #Landmarks
-        if landmarks:
-            landmark = frame[frame.landmark_columns].values[0]
-            currx = landmark[:68]
-            curry = landmark[68:]
+		#Landmarks
+		if landmarks:
+			landmark = frame[frame.landmark_columns].values[0]
+			currx = landmark[:68]
+			curry = landmark[68:]
 
-        # facelines
-        if facelines:
-            face_ax = draw_lineface(
-                    currx
-                    , curry
-                    , ax=face_ax
-                    , color=lmk_color
-                    , linewidth=lmk_lw
-                    )
+		# facelines
+		if facelines:
+			face_ax = draw_lineface(
+					currx
+					, curry
+					, ax=face_ax
+					, color=lmk_color
+					, linewidth=lmk_lw
+					)
 
-        plt.axis('off')
-        plt.savefig(target_folder + str(frame_nb)+".png", bbox_inches='tight', dpi=200, pad_inches = 0)
-        plt.close()
+		plt.axis('off')
+		plt.savefig(target_folder + str(frame_nb)+".png", bbox_inches='tight', dpi=200, pad_inches = 0)
+		plt.close()
 
 def create_tracked_video(analysis, target_video_folder="preproc/tracked/", target_frames_folder= "preproc/frames/", fps=30, img_extension=".png", preset="slow", loseless=0, remove_frames=False, extract_frames=True, create_video=True, video_extension=".mp4"):
 	"""
@@ -182,19 +182,19 @@ def create_tracked_video(analysis, target_video_folder="preproc/tracked/", targe
     from conversions import get_file_without_path
     import shutil
 
-    #Extract frames
-    if extract_frames:
-        os.makedirs(target_frames_folder, exist_ok=True)
-        extract_tracked_frames(analysis, target_frames_folder)
+	#Extract frames
+	if extract_frames:
+		os.makedirs(target_frames_folder, exist_ok=True)
+		extract_tracked_frames(analysis, target_frames_folder)
 
-    # Create video from frames
-    if create_video:
-        file_tag = get_file_without_path(analysis)
-        os.makedirs(target_video_folder, exist_ok=True)
-        create_movie_from_frames(frame_name_tag=target_frames_folder, fps=fps, img_extension =img_extension , target_video=target_video_folder + file_tag + video_extension, video_codec="copy", preset=preset, loseless=0)
+	# Create video from frames
+	if create_video:
+		file_tag = get_file_without_path(analysis)
+		os.makedirs(target_video_folder, exist_ok=True)
+		create_movie_from_frames(frame_name_tag=target_frames_folder, fps=fps, img_extension =img_extension , target_video=target_video_folder + file_tag + video_extension, video_codec="copy", preset=preset, loseless=0)
 
-    if remove_frames:
-        shutil.rmtree(folder_path)
+	if remove_frames:
+		shutil.rmtree(folder_path)
 
 def create_au_video(analysis, target_video_folder="preproc/tracked/"
 							, target_frames_folder= "preproc/frames/"
@@ -209,28 +209,25 @@ def create_au_video(analysis, target_video_folder="preproc/tracked/"
 	Creates a video of the AUs extracted with py-feat by extracting each frame and then collecting it all into a video file with ffmpeg
 	
 	"""							
-    from face_analysis import extract_au_analysis_frames
-    from video_processing import create_movie_from_frames
-    import os
-    from conversions import get_file_without_path
-    import shutil
+	from face_analysis import extract_au_analysis_frames
+	from video_processing import create_movie_from_frames
+	import os
+	from conversions import get_file_without_path
+	import shutil
 
-    #Extract frames
-    if extract_frames:
-        os.makedirs(target_frames_folder, exist_ok=True)
-        extract_au_analysis_frames(analysis, target_frames_folder)
+	#Extract frames
+	if extract_frames:
+		os.makedirs(target_frames_folder, exist_ok=True)
+		extract_au_analysis_frames(analysis, target_frames_folder)
 
-    # Create video from frames
-    if create_video:
-        file_tag = get_file_without_path(analysis)
-        os.makedirs(target_video_folder, exist_ok=True)
-        create_movie_from_frames(frame_name_tag=target_frames_folder, fps=fps, img_extension =img_extension , target_video=target_video_folder + file_tag + video_extension, video_codec="copy", preset=preset, loseless=loseless)
+	# Create video from frames
+	if create_video:
+		file_tag = get_file_without_path(analysis)
+		os.makedirs(target_video_folder, exist_ok=True)
+		create_movie_from_frames(frame_name_tag=target_frames_folder, fps=fps, img_extension =img_extension , target_video=target_video_folder + file_tag + video_extension, video_codec="copy", preset=preset, loseless=loseless)
 
-    if remove_frames:
-        shutil.rmtree(folder_path)
-
-
-		
+	if remove_frames:
+		shutil.rmtree(folder_path)
 
 if __name__ == "__main__":
 	sources = "data/sharpened_db/*/*.mp4"
