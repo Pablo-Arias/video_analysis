@@ -21,10 +21,12 @@ def transcribe_video_file(file, transcription_path="transcribed/", audio_path= "
     #Create empty results file, to say that we are in the process of anlysing it
     open(target_path, "a")
 
+    #handle file names
+    file_tag = get_file_without_path(file)
+    audio = audio_path + file_tag+".wav"
+    
     #Extract audio
     if extract_audio:
-        file_tag = get_file_without_path(file)
-        audio = audio_path + file_tag+".wav"
         extract_audio(file, audio)
     
     #Speech to text
@@ -54,10 +56,12 @@ def transcribe_video_file_time_stamps(file, transcription_path="transcribed/", a
     #Create empty results file, to say that we are in the process of anlysing it
     open(target_path, "a")
 
+    #handle file names
+    file_tag = get_file_without_path(file)
+    audio_file = audio_path + file_tag+".wav"
+
     #Extract audio
     if extract_audio:
-        file_tag = get_file_without_path(file)
-        audio_file = audio_path + file_tag+".wav"
         extract_audio(file, audio_file)
     
     #Speech to text
