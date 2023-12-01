@@ -38,7 +38,7 @@ def transcribe_video_file(file, transcription_path="transcribed/", audio_path= "
     text_file.close()
 
 
-def transcribe_video_file_time_stamps(file, transcription_path="transcribed/", audio_path= "extracted_audio/", model_type= "large", language="English", fp16=True, device="cpu"):
+def transcribe_video_file_time_stamps(file, transcription_path="transcribed/", audio_path= "extracted_audio/", model_type= "large", language="English", fp16=True, device="cpu", extract_audio=True):
     import whisper_timestamped as whisper
     import json
 
@@ -54,9 +54,10 @@ def transcribe_video_file_time_stamps(file, transcription_path="transcribed/", a
     open(target_path, "a")
 
     #Extract audio
-    file_tag = get_file_without_path(file)
-    audio_file = audio_path + file_tag+".wav"
-    extract_audio(file, audio_file)
+    if extract_audio:
+        file_tag = get_file_without_path(file)
+        audio_file = audio_path + file_tag+".wav"
+        extract_audio(file, audio_file)
     
     #Speech to text
     audio = whisper.load_audio(audio_file)
