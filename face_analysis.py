@@ -89,7 +89,7 @@ def analyse_videos(sources, target_folder
 
 def extract_au_analysis_frames(analysis, target_folder,faceboxes=False, add_titles=False, muscles=True, plot_original_image=False, gazes=True):
 	#Create analysis folder
-    os.makedirs(target_folder, exist_ok=True)
+	os.makedirs(target_folder, exist_ok=True)
 
 	#Import analysis
 	video_prediction = read_feat(analysis)
