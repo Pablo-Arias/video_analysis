@@ -176,11 +176,11 @@ def create_tracked_video(analysis, target_video_folder="preproc/tracked/", targe
 	"""
 	This function takes the results from py-feat and creates a video with them showing the tracking, gaze and head detection results.
 	"""
-    from face_analysis import extract_tracked_frames
-    from video_processing import create_movie_from_frames
-    import os
-    from conversions import get_file_without_path
-    import shutil
+	from face_analysis import extract_tracked_frames
+	from video_processing import create_movie_from_frames
+	import os
+	from conversions import get_file_without_path
+	import shutil
 
 	#Extract frames
 	if extract_frames:
