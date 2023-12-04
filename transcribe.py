@@ -164,6 +164,8 @@ def transcribe_parallel_time_stamps(sources, transcription_path="transcribed/"
                                       , repeat(detect_disfluencies)
                                         )
                     )
+    
+    print("Done transcribing parallel!")
 
 
 ## Transcrive parallel
