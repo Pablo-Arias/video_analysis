@@ -41,7 +41,21 @@ def transcribe_video_file(file, transcription_path="transcribed/", audio_path= "
     text_file.close()
 
 
-def transcribe_video_file_time_stamps(file, transcription_path="transcribed/", audio_path= "extracted_audio/", model_type= "large", language="English", fp16=True, device="cpu", extract_audio=True):
+def transcribe_video_file_time_stamps(file, transcription_path="transcribed/"
+                                      , audio_path= "extracted_audio/"
+                                      , model_type= "large"
+                                      , language="En"
+                                      , device="cpu"
+                                      , extract_audio=True
+                                      , temperature = (0.0, 0.2, 0.4, 0.6, 0.8, 1.0)
+                                      , best_of=5
+                                      , beam_size=5
+                                      , vad="auditok"
+                                      , detect_disfluencies=True
+                                      ):
+    """
+    Check transcription arguiments here: https://github.com/linto-ai/whisper-timestamped#light-installation-for-cpu
+    """
     import whisper_timestamped as whisper
     import json
 
@@ -67,7 +81,8 @@ def transcribe_video_file_time_stamps(file, transcription_path="transcribed/", a
     #Speech to text
     audio = whisper.load_audio(audio_file)
     model = whisper.load_model(model_type, device=device)
-    result = whisper.transcribe(model, audio, language="fr")
+    result = whisper.transcribe(model, audio, language=language, beam_size=beam_size, best_of=best_of, temperature=temperature, vad=vad, detect_disfluencies=detect_disfluencies)
+
     output = json.dumps(result, indent = 2, ensure_ascii = False)
     print(output)
     
@@ -102,11 +117,22 @@ def transcribe_wav_file(file, transcription_path="transcribed/", audio_path= "ex
     text_file.close()
 
 
-def transcribe_parallel_time_stamps(sources, transcription_path="transcribed/", audio_path="extracted_audio/", model_type="large", language="English", fp16=False, device="cpu", extract_audio=True):
+def transcribe_parallel_time_stamps(sources, transcription_path="transcribed/"
+                                    , audio_path="extracted_audio/"
+                                    , model_type="large"
+                                    , language="English"
+                                    , device="cpu"
+                                    , extract_audio=True
+                                    , temperature = (0.0, 0.2, 0.4, 0.6, 0.8, 1.0)
+                                    , best_of = 5
+                                    , beam_size = 5
+                                    , vad = "auditok"
+                                    , detect_disfluencies = True
+                                    ):
     """
     source folder should be in the shape of glob.glob
     audio_path : is where the audio will be stored after extraction
-    Here for more details : https://github.com/openai/whisper
+    And here for parameteres : https://github.com/linto-ai/whisper-timestamped#light-installation-for-cpu
 
     Usage example:
         Add description here
@@ -123,15 +149,21 @@ def transcribe_parallel_time_stamps(sources, transcription_path="transcribed/", 
     pool_obj = multiprocessing.Pool()
     sources     = glob.glob(sources)
     
-    pool_obj.starmap(transcribe_video_file_time_stamps, zip(sources
-                                               , repeat(transcription_path)
-                                               , repeat(audio_path)
-                                               , repeat(model_type)
-                                               , repeat(language)
-                                               , repeat(fp16)
-                                               , repeat(device)
-                                               , repeat(extract_audio)
-                                               ))
+    pool_obj.starmap(transcribe_video_file_time_stamps, 
+                                      zip(sources
+                                      , repeat(transcription_path)
+                                      , repeat(audio_path)
+                                      , repeat(model_type)
+                                      , repeat(language)
+                                      , repeat(device)
+                                      , repeat(extract_audio)
+                                      , repeat(temperature)
+                                      , repeat(best_of)
+                                      , repeat(beam_size)
+                                      , repeat(vad)
+                                      , repeat(detect_disfluencies)
+                                        )
+                    )
 
 def transcribe_parallel(sources, transcription_path="transcribed/", audio_path="extracted_audio/", model_type="large", language="English", fp16=False, extract_audio=True):
     """
