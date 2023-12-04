@@ -223,7 +223,7 @@ def create_au_video(analysis, target_video_folder="preproc/tracked/"
 	if create_video:
 		file_tag = get_file_without_path(analysis)
 		os.makedirs(target_video_folder, exist_ok=True)
-		create_movie_from_frames(frame_name_tag=target_frames_folder, fps=fps, img_extension =img_extension , target_video=target_video_folder + file_tag + video_extension, video_codec="copy", preset=preset)
+		create_movie_from_frames(frame_name_tag=target_frames_folder, fps=fps, img_extension =img_extension , target_video=target_video_folder + file_tag + video_extension, preset=preset)
 
 	if remove_frames:
 		shutil.rmtree(target_frames_folder)
