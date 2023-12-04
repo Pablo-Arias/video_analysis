@@ -172,7 +172,7 @@ def extract_tracked_frames(analysis
 		plt.savefig(target_folder + str(frame_nb)+".png", bbox_inches='tight', dpi=200, pad_inches = 0)
 		plt.close()
 
-def create_tracked_video(analysis, target_video_folder="preproc/tracked/", target_frames_folder= "preproc/frames/", fps=30, img_extension=".png", preset="slow", loseless=0, remove_frames=False, extract_frames=True, create_video=True, video_extension=".mp4"):
+def create_tracked_video(analysis, target_video_folder="preproc/tracked/", target_frames_folder= "preproc/frames/", fps=30, img_extension=".png", preset="slow", remove_frames=False, extract_frames=True, create_video=True, video_extension=".mp4"):
 	"""
 	This function takes the results from py-feat and creates a video with them showing the tracking, gaze and head detection results.
 	"""
