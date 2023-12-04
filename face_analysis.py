@@ -191,16 +191,15 @@ def create_tracked_video(analysis, target_video_folder="preproc/tracked/", targe
 	if create_video:
 		file_tag = get_file_without_path(analysis)
 		os.makedirs(target_video_folder, exist_ok=True)
-		create_movie_from_frames(frame_name_tag=target_frames_folder, fps=fps, img_extension =img_extension , target_video=target_video_folder + file_tag + video_extension, video_codec="copy", preset=preset, loseless=0)
+		create_movie_from_frames(frame_name_tag=target_frames_folder, fps=fps, img_extension =img_extension , target_video=target_video_folder + file_tag + video_extension, preset=preset)
 
 	if remove_frames:
-		shutil.rmtree(folder_path)
+		shutil.rmtree(target_frames_folder)
 
 def create_au_video(analysis, target_video_folder="preproc/tracked/"
 							, target_frames_folder= "preproc/frames/"
 							, fps=30, img_extension=".png"
 							, preset="slow"
-							, loseless=18
 							, remove_frames=False
 							, extract_frames=True
 							, create_video=True
@@ -224,10 +223,10 @@ def create_au_video(analysis, target_video_folder="preproc/tracked/"
 	if create_video:
 		file_tag = get_file_without_path(analysis)
 		os.makedirs(target_video_folder, exist_ok=True)
-		create_movie_from_frames(frame_name_tag=target_frames_folder, fps=fps, img_extension =img_extension , target_video=target_video_folder + file_tag + video_extension, video_codec="copy", preset=preset, loseless=loseless)
+		create_movie_from_frames(frame_name_tag=target_frames_folder, fps=fps, img_extension =img_extension , target_video=target_video_folder + file_tag + video_extension, video_codec="copy", preset=preset)
 
 	if remove_frames:
-		shutil.rmtree(folder_path)
+		shutil.rmtree(target_frames_folder)
 
 if __name__ == "__main__":
 	sources = "data/sharpened_db/*/*.mp4"
