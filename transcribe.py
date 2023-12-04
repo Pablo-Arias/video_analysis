@@ -10,12 +10,12 @@ from transform_audio import extract_sentences_tags
 
 ## Parallel processing functions
 def transcribe_video_file(file, transcription_path="transcribed/", audio_path= "extracted_audio/", model_type= "large", language="English", fp16=True, extract_audio_flag=True):
-    print("Analysing : " + file)
+    print("Analysing : " + file, flush=True)
     
     file_tag = get_file_without_path(file)
     target_path = transcription_path + file_tag + ".txt"
     if os.path.isfile(target_path):
-        print("Skipping this file because it exists already  : " + target_path)
+        print("Skipping this file because it exists already  : " + target_path, flush=True)
         return
     
     #Create empty results file, to say that we are in the process of anlysing it
@@ -33,7 +33,7 @@ def transcribe_video_file(file, transcription_path="transcribed/", audio_path= "
     model = whisper.load_model(model_type)
     result = model.transcribe(audio, fp16=fp16, language=language)
     output = result["text"]
-    print(output)
+    print(output, flush=True)
     
     #Write results
     text_file = open(target_path, "w")
@@ -59,12 +59,12 @@ def transcribe_video_file_time_stamps(file, transcription_path="transcribed/"
     import whisper_timestamped as whisper
     import json
 
-    print("Analysing : " + file)
+    print("Analysing : " + file, flush=True)
     
     file_tag = get_file_without_path(file)
     target_path = transcription_path + file_tag + ".txt"
     if os.path.isfile(target_path):
-        print("Skipping this file because it exists already  : " + target_path)
+        print("Skipping this file because it exists already  : " + target_path, flush=True)
         return
     
     #Create empty results file, to say that we are in the process of anlysing it
@@ -81,10 +81,12 @@ def transcribe_video_file_time_stamps(file, transcription_path="transcribed/"
     #Speech to text
     audio = whisper.load_audio(audio_file)
     model = whisper.load_model(model_type, device=device)
+
+    
     result = whisper.transcribe(model, audio, language=language, beam_size=beam_size, best_of=best_of, temperature=temperature, vad=vad, detect_disfluencies=detect_disfluencies)
 
     output = json.dumps(result, indent = 2, ensure_ascii = False)
-    print(output)
+    print(output, flush=True)
     
     #Write results
     text_file = open(target_path, "w")
@@ -93,13 +95,13 @@ def transcribe_video_file_time_stamps(file, transcription_path="transcribed/"
 
 
 def transcribe_wav_file(file, transcription_path="transcribed/", audio_path= "extracted_audio/", model_type= "large", language="English", fp16=True):
-    print("Analysing : " + file)
+    print("Analysing : " + file, flush=True)
     
 
     file_tag = get_file_without_path(file)
     target_path = transcription_path + file_tag + ".txt"
     if os.path.isfile(target_path):
-        print("Skipping this file because it exists already  : " + target_path)
+        print("Skipping this file because it exists already  : " + target_path, flush=True)
         return
     
     #Create empty results file, to say that we are in the process of anlysing it
@@ -109,7 +111,7 @@ def transcribe_wav_file(file, transcription_path="transcribed/", audio_path= "ex
     model = whisper.load_model(model_type)
     result = model.transcribe(audio, fp16=fp16, language=language)
     output = result["text"]
-    print(output)
+    print(output, flush=True)
     
     #Write results
     text_file = open(target_path, "w")
@@ -162,7 +164,7 @@ def transcribe_parallel_time_stamps(sources, transcription_path="transcribed/"
                                         )
                     )
     
-    print("Done transcribing parallel!")
+    print("Done transcribing parallel!", flush=True)
 
 
 ## Transcrive parallel
