@@ -137,11 +137,8 @@ def transcribe_parallel_time_stamps(sources, transcription_path="transcribed/"
     Usage example:
         Add description here
     """
-    try:
-        os.mkdir(transcription_path)
-        os.mkdir(audio_path)
-    except:
-        pass
+    os.makedirs(transcription_path, exist_ok=True)
+    os.makedirs(audio_path, exist_ok=True)
 
     import multiprocessing
     from itertools import repeat
