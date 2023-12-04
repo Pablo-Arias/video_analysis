@@ -9,7 +9,7 @@ from transform_audio import extract_sentences_tags
 
 
 ## Parallel processing functions
-def transcribe_video_file(file, transcription_path="transcribed/", audio_path= "extracted_audio/", model_type= "large", language="English", fp16=True, extract_audio=True):
+def transcribe_video_file(file, transcription_path="transcribed/", audio_path= "extracted_audio/", model_type= "large", language="English", fp16=True, extract_audio_flag=True):
     print("Analysing : " + file)
     
     file_tag = get_file_without_path(file)
@@ -26,7 +26,7 @@ def transcribe_video_file(file, transcription_path="transcribed/", audio_path= "
     audio = audio_path + file_tag+".wav"
     
     #Extract audio
-    if extract_audio:
+    if extract_audio_flag:
         extract_audio(file, audio)
     
     #Speech to text
@@ -46,7 +46,7 @@ def transcribe_video_file_time_stamps(file, transcription_path="transcribed/"
                                       , model_type= "large"
                                       , language="En"
                                       , device="cpu"
-                                      , extract_audio=True
+                                      , extract_audio_flag=True
                                       , temperature = (0.0, 0.2, 0.4, 0.6, 0.8, 1.0)
                                       , best_of=5
                                       , beam_size=5
@@ -75,7 +75,7 @@ def transcribe_video_file_time_stamps(file, transcription_path="transcribed/"
     audio_file = audio_path + file_tag+".wav"
 
     #Extract audio
-    if extract_audio:
+    if extract_audio_flag:
         extract_audio(file, audio_file)
     
     #Speech to text
@@ -122,7 +122,7 @@ def transcribe_parallel_time_stamps(sources, transcription_path="transcribed/"
                                     , model_type="large"
                                     , language="English"
                                     , device="cpu"
-                                    , extract_audio=True
+                                    , extract_audio_flag=True
                                     , temperature = (0.0, 0.2, 0.4, 0.6, 0.8, 1.0)
                                     , best_of = 5
                                     , beam_size = 5
@@ -156,7 +156,7 @@ def transcribe_parallel_time_stamps(sources, transcription_path="transcribed/"
                                       , repeat(model_type)
                                       , repeat(language)
                                       , repeat(device)
-                                      , repeat(extract_audio)
+                                      , repeat(extract_audio_flag)
                                       , repeat(temperature)
                                       , repeat(best_of)
                                       , repeat(beam_size)
@@ -165,7 +165,9 @@ def transcribe_parallel_time_stamps(sources, transcription_path="transcribed/"
                                         )
                     )
 
-def transcribe_parallel(sources, transcription_path="transcribed/", audio_path="extracted_audio/", model_type="large", language="English", fp16=False, extract_audio=True):
+
+## Transcrive parallel
+def transcribe_parallel(sources, transcription_path="transcribed/", audio_path="extracted_audio/", model_type="large", language="English", fp16=False, extract_audio_flag=True):
     """
     source folder should be in the shape of glob.glob
     audio_path : is where the audio will be stored after extraction
@@ -197,6 +199,6 @@ def transcribe_parallel(sources, transcription_path="transcribed/", audio_path="
                                                , repeat(model_type)
                                                , repeat(language)
                                                , repeat(fp16)
-                                               , repeat(extract_audio)
+                                               , repeat(extract_audio_flag)
                                                ))
 
