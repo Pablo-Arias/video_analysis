@@ -216,6 +216,7 @@ def generate_subtitles(target_folder, transcription_folder):
         target_srt_file = target_folder + file_tag + ".srt"
 
         #Open transcription
+        print(transcription_file)
         f = open(transcription_file)
         data = json.load(f)
 
