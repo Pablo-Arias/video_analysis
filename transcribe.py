@@ -215,6 +215,11 @@ def generate_subtitles(target_folder, transcription_folder):
         file_tag = get_file_without_path(transcription_file)
         target_srt_file = target_folder + file_tag + ".srt"
 
+        if os.stat(transcription_file).st_size == 0:
+            #file is empty, continue
+            print("Transcription file is empty, continuing : " + transcription_file)
+            continue
+
         #Open transcription
         print(transcription_file)
         f = open(transcription_file)
