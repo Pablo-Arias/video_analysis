@@ -203,3 +203,42 @@ def transcribe_parallel(sources, transcription_path="transcribed/", audio_path="
                                                , repeat(extract_audio_flag)
                                                ))
 
+def generate_subtitles(target_folder, transcription_folder):
+    #create target folders
+    os.makedirs(target_folder, exist_ok=True)
+
+    for transcription_file in transcription_folder:
+        #Prepare variables
+        file_tag = get_file_without_path(transcription_file)
+        target_srt_file = target_folder + file_tag + ".srt"
+
+        #Open transcription
+        f = open(analysis_file)
+        data = json.load(f)
+
+        #Remove srt file if it exists already
+        try:
+            os.remove(target_srt_file)
+        except OSError:
+            pass
+        
+        #Create new file
+        srt_file = open(target_srt_file, "a")
+
+        # create new file with srt format
+        for segment in data["segments"]:
+            #Extract data
+            id    = segment["id"]
+            text  = segment["text"]
+            start = segment["start"]
+            start = str(datetime.timedelta(seconds=start))
+            end   = segment["end"]
+            end = str(datetime.timedelta(seconds=end))
+            
+            #write it
+            srt_file.write(str(id) + "\n")
+            srt_file.write(start + "-->" + end + "\n")
+            srt_file.write(text + "\n")
+            srt_file.write("\n")
+        
+        srt_file.close()

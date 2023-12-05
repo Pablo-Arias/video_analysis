@@ -172,7 +172,7 @@ def extract_tracked_frames(analysis
 		plt.savefig(target_folder + str(frame_nb)+".png", bbox_inches='tight', dpi=200, pad_inches = 0)
 		plt.close()
 
-def create_tracked_video(analysis, target_video_folder="preproc/tracked/", target_frames_folder= "preproc/frames/", fps=30, img_extension=".png", preset="slow", remove_frames=False, extract_frames=True, create_video=True, video_extension=".mp4"):
+def create_tracked_video(analysis, target_video_folder="preproc/tracked/", target_frames_folder= "preproc/frames/", fps=30, img_extension=".png", preset="slow", remove_frames=False, extract_frames=True, create_video=True, video_extension=".mp4", add_audio=None):
 	"""
 	This function takes the results from py-feat and creates a video with them showing the tracking, gaze and head detection results.
 	"""
@@ -182,16 +182,33 @@ def create_tracked_video(analysis, target_video_folder="preproc/tracked/", targe
 	from conversions import get_file_without_path
 	import shutil
 
+	#define variables
+	file_tag = get_file_without_path(analysis)
+	target_video = target_video_folder + file_tag + video_extension
+
 	#Extract frames
 	if extract_frames:
 		os.makedirs(target_frames_folder, exist_ok=True)
 		extract_tracked_frames(analysis, target_frames_folder)
 
+	#Extract audio
+	if add_audio:
+		video_prediction = read_feat(analysis)
+		file = video_prediction.input[0]
+		from video_processing import extract_audio, replace_audio
+		import uuid
+		audio_file = str(uuid.uuid1()) +"____.wav"
+		extract_audio(file, target_name=audio_file, nb_audio_channels=1)
+	else:
+		audio_file=None
+	
 	# Create video from frames
 	if create_video:
-		file_tag = get_file_without_path(analysis)
 		os.makedirs(target_video_folder, exist_ok=True)
-		create_movie_from_frames(frame_name_tag=target_frames_folder, fps=fps, img_extension =img_extension , target_video=target_video_folder + file_tag + video_extension, preset=preset)
+		create_movie_from_frames(frame_name_tag=target_frames_folder, fps=fps, img_extension =img_extension , target_video=target_video, preset=preset, audio_file=audio_file)
+
+	if add_audio:
+		os.remove(audio_file)
 
 	if remove_frames:
 		shutil.rmtree(target_frames_folder)
@@ -203,7 +220,8 @@ def create_au_video(analysis, target_video_folder="preproc/tracked/"
 							, remove_frames=False
 							, extract_frames=True
 							, create_video=True
-							, video_extension=".mp4"):
+							, video_extension=".mp4"
+							, add_audio=None ):
 	"""
 	Creates a video of the AUs extracted with py-feat by extracting each frame and then collecting it all into a video file with ffmpeg
 	
@@ -218,12 +236,23 @@ def create_au_video(analysis, target_video_folder="preproc/tracked/"
 	if extract_frames:
 		os.makedirs(target_frames_folder, exist_ok=True)
 		extract_au_analysis_frames(analysis, target_frames_folder)
+	
+	#Extract audio
+	if add_audio:
+		video_prediction = read_feat(analysis)
+		file = video_prediction.input[0]
+		from video_processing import extract_audio, replace_audio
+		import uuid
+		audio_file = str(uuid.uuid1()) +"____.wav"
+		extract_audio(file, target_name=audio_file, nb_audio_channels=1)	
+	else:
+		audio_file = None
 
 	# Create video from frames
 	if create_video:
 		file_tag = get_file_without_path(analysis)
 		os.makedirs(target_video_folder, exist_ok=True)
-		create_movie_from_frames(frame_name_tag=target_frames_folder, fps=fps, img_extension =img_extension , target_video=target_video_folder + file_tag + video_extension, preset=preset)
+		create_movie_from_frames(frame_name_tag=target_frames_folder, fps=fps, img_extension =img_extension , target_video=target_video_folder + file_tag + video_extension, preset=preset, audio_file=audio_file)
 
 	if remove_frames:
 		shutil.rmtree(target_frames_folder)
