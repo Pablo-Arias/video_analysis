@@ -100,7 +100,8 @@ def extract_au_analysis_frames(analysis, target_folder,faceboxes=False, add_titl
 	#Save plots
 	for cpt, figure in enumerate(figures):
 		figure.savefig(target_folder+str(cpt)+".png")
-		figure.close()
+
+	plt.close('all')
 
 def extract_tracked_frames(analysis
                             , target_folder, facelines =True,  pose=True, face_detection=True, landmarks=True
