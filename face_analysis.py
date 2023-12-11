@@ -87,7 +87,7 @@ def analyse_videos(sources, target_folder
 			os.remove(target_file)
 			pass
 
-def extract_au_analysis_frames(analysis, target_folder,faceboxes=False, add_titles=False, muscles=True, plot_original_image=False, gazes=True):
+def extract_au_analysis_frames(analysis, target_folder,faceboxes=False, add_titles=False, muscles=True, plot_original_image=False, gazes=True, nb_images=100):
 	#Create analysis folder
 	os.makedirs(target_folder, exist_ok=True)
 
@@ -95,13 +95,14 @@ def extract_au_analysis_frames(analysis, target_folder,faceboxes=False, add_titl
 	video_prediction = read_feat(analysis)
 
 	#Get plots
-	figures = video_prediction.loc[:].plot_detections(faceboxes=faceboxes, add_titles=add_titles, muscles=muscles, plot_original_image=plot_original_image, gazes=gazes)
+	for frame in range(len(video_prediction)):
+		figure = video_prediction.loc[frame:frame].plot_detections(faceboxes=faceboxes, add_titles=add_titles, muscles=muscles, plot_original_image=plot_original_image, gazes=gazes)[0]
 
-	#Save plots
-	for cpt, figure in enumerate(figures):
-		figure.savefig(target_folder+str(cpt)+".png")
+		#Save plots
+		figure.savefig(target_folder+str(frame)+".png")
 
-	plt.close('all')
+		#Close to save memory
+		plt.close('all')
 
 def extract_tracked_frames(analysis
                             , target_folder, facelines =True,  pose=True, face_detection=True, landmarks=True
