@@ -70,6 +70,8 @@ def plot_face_blendshapes_bar_graph(face_blendshapes):
 
   ax.set_xlabel('Score')
   ax.set_title("Face Blendshapes")
+  ax.set_xlim(0, 1)  # Set X-axis limit from 0 to 1
+
   plt.tight_layout()
   return fig
 
