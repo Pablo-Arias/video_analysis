@@ -180,11 +180,11 @@ def transcribe_parallel(sources, transcription_path="transcribed/", audio_path="
             transcribe_parallel("processed/gst-1.22.6-chK/re-encode/*/*.mp4", model_type="small")
 
         if __name__ == '__main__':
-            transcribe_parallel()
+            main()
     """
     try:
-        os.mkdir(transcription_path)
-        os.mkdir(audio_path)
+        os.makedirs(transcription_path, exist_ok=True)
+        os.makedirs(audio_path, exist_ok=True)
     except:
         pass
 
