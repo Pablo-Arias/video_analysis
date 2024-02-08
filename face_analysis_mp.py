@@ -97,6 +97,9 @@ def analyse_video(source
                   ):
   
   print("Starting analysis for : " + source)
+  file_tag = os.path.splitext(os.path.basename(source))[0]
+  target_frames_folder   = target_frames_folder   + file_tag + "/"
+  target_AU_plots_folder = target_AU_plots_folder + file_tag + "/"
 
   #Create folders needed
   if export_analysis:
