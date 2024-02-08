@@ -10,6 +10,7 @@ from video_processing import create_movie_from_frames, extract_audio, combine_2_
 import os
 import shutil
 import polars as pl
+import glob
 
 
 #We implemented some functions to visualize the face landmark detection results. <br/> Run the following cell to activate the functions.
@@ -239,16 +240,23 @@ def analyse_video(source
 ## Analyse folder parallel
 def analyse_video_parallel(sources
                   , target_analysis_folder
-                  , target_frames_folder="tracked/"
-                  , target_video_folder="output_video/"
-                  , model_asset_path = "face_landmarker_v2_with_blendshapes.task"
-                  , output_face_blendshapes= True
-                  , num_faces=1
-                  , export_image=True
-                  , export_analysis = True
-                  , create_tracked_video=True
-                  , fps = 25
-                  , delete_frames=True
+                  , target_frames_folder     = "tracked/"
+                  , target_video_folder      = "output_video/"
+                  , target_au_video_folder   = "au_video/"
+                  , target_AU_plots_folder   = "AU_bar_graph_folder/"
+                  , combined_videos_folder   = "combined_videos_folder/"
+                  , model_asset_path         = "face_landmarker_v2_with_blendshapes.task"
+                  , output_face_blendshapes  = True
+                  , num_faces                = 1
+                  , export_tracked_frames    = True
+                  , export_AU_bargraphs      = True
+                  , export_analysis          = True
+                  , create_tracked_video     = True
+                  , combine_AU_graphs_into_video = True
+                  , combine_AU_bargraphs_and_tracked_video = True
+                  , fps            = 25
+                  , delete_frames  = True
+                  , delete_bar_graphs = True
                     ):
   """
     source folder should be in the shape of glob.glob
@@ -260,13 +268,14 @@ def analyse_video_parallel(sources
     if __name__ == '__main__':
         main()
   """
-  try:
-    os.makedirs(target_analysis_folder, exist_ok=True)
-    os.makedirs(target_frames_folder, exist_ok=True)
-    os.makedirs(target_video_folder, exist_ok=True)
 
-  except:
-    pass
+  os.makedirs(target_analysis_folder, exist_ok=True)
+  os.makedirs(target_frames_folder, exist_ok=True)
+  os.makedirs(target_video_folder, exist_ok=True)
+  os.makedirs(target_au_video_folder, exist_ok=True)
+  os.makedirs(target_AU_plots_folder, exist_ok=True)
+  os.makedirs(combined_videos_folder, exist_ok=True)
+
 
   import multiprocessing
   from itertools import repeat
@@ -277,12 +286,19 @@ def analyse_video_parallel(sources
                                         , repeat(target_analysis_folder)
                                         , repeat(target_frames_folder)
                                         , repeat(target_video_folder)
+                                        , repeat(target_au_video_folder)
+                                        , repeat(target_AU_plots_folder)
+                                        , repeat(combined_videos_folder)
                                         , repeat(model_asset_path)
                                         , repeat(output_face_blendshapes)
                                         , repeat(num_faces)
-                                        , repeat(export_image)
+                                        , repeat(export_tracked_frames)
+                                        , repeat(export_AU_bargraphs)
                                         , repeat(export_analysis)
                                         , repeat(create_tracked_video)
+                                        , repeat(combine_AU_graphs_into_video)
+                                        , repeat(combine_AU_bargraphs_and_tracked_video)
                                         , repeat(fps)
-                                        , repeat(delete_frames)      
+                                        , repeat(delete_frames)
+                                        , repeat(delete_bar_graphs)
                                         ))
