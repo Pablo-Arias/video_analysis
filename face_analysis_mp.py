@@ -224,7 +224,7 @@ def analyse_video(source
   if combine_AU_bargraphs_and_tracked_video :
     left = target_au_video_folder + file_tag  
     right = target_video_folder + file_tag
-    combine_2_videos(left, right, combined_videos_folder + file_tag, combine_audio_flag=True)
+    combine_2_videos(left, right, combined_videos_folder + file_tag, combine_audio_flag=False)
 
   #Delete frames if needed
   if delete_frames:
