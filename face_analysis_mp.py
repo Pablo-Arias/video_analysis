@@ -110,6 +110,9 @@ def analyse_video(source
 
   if combine_AU_graphs_into_video:
     os.makedirs(target_au_video_folder, exist_ok=True)
+
+  if combine_AU_bargraphs_and_tracked_video:
+    os.makedirs(combined_videos_folder, exist_ok=True)
     
 
   #General
