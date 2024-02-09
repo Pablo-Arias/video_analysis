@@ -1,5 +1,8 @@
 from mediapipe import solutions
 from mediapipe.framework.formats import landmark_pb2
+
+import os
+os.environ['OPENBLAS_NUM_THREADS'] = '1'
 import numpy as np
 import mediapipe as mp
 from mediapipe.tasks.python import vision
