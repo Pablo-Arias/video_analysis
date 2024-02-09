@@ -166,6 +166,7 @@ def analyse_video(source
       if export_AU_bargraphs:
         fig = plot_face_blendshapes_bar_graph(detection_result.face_blendshapes[0])
         fig.savefig(target_AU_plots_folder+ str(cpt) + ".png")
+        plt.close(fig)
       
       cpt+=1
     else:
