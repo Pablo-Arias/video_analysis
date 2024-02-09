@@ -78,6 +78,10 @@ def transcribe_video_file_time_stamps(file, transcription_path="transcribed/"
     if extract_audio_flag:
         extract_audio(file, audio_file)
     
+    if not os.path.isfile(audio_file):
+        print("The file could not be read, returning. File : " + file)
+        return
+    
     #Speech to text
     audio = whisper.load_audio(audio_file)
     model = whisper.load_model(model_type, device=device)
