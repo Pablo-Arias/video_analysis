@@ -243,7 +243,7 @@ def analyse_video(source
   #Delete frames if needed
   if delete_bar_graphs:
      print("Deleting bar graphs")
-     shutil.rmtree(target_frames_folder)
+     shutil.rmtree(target_AU_plots_folder)
 
 
   print("Finished all for : " + source)
