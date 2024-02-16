@@ -106,7 +106,7 @@ def analyse_video(source
   target_AU_plots_folder = target_AU_plots_folder + file_tag + "/"
 
   au_analysis_file = target_analysis_folder + file_tag + ".csv"
-  if os.path.isfile(source):
+  if os.path.isfile(au_analysis_file):
     print("File exists skipping for : " + source)
     return  
 
