@@ -101,14 +101,14 @@ def analyse_video(source
   
   print("Starting analysis for : " + source)
 
-  au_analysis_file = target_analysis_folder + file_tag + ".csv"
-  if os.path.isfile(source):
-    print("File exists skipping for : " + source)
-    return
-
   file_tag = os.path.splitext(os.path.basename(source))[0]
   target_frames_folder   = target_frames_folder   + file_tag + "/"
   target_AU_plots_folder = target_AU_plots_folder + file_tag + "/"
+
+  au_analysis_file = target_analysis_folder + file_tag + ".csv"
+  if os.path.isfile(source):
+    print("File exists skipping for : " + source)
+    return  
 
   #Create folders needed
   if export_analysis:
