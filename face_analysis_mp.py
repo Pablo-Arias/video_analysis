@@ -100,6 +100,12 @@ def analyse_video(source
                   ):
   
   print("Starting analysis for : " + source)
+
+  au_analysis_file = target_analysis_folder + file_tag + ".csv"
+  if os.path.isfile(source):
+    print("File exists skipping for : " + source)
+    return
+
   file_tag = os.path.splitext(os.path.basename(source))[0]
   target_frames_folder   = target_frames_folder   + file_tag + "/"
   target_AU_plots_folder = target_AU_plots_folder + file_tag + "/"
@@ -198,7 +204,7 @@ def analyse_video(source
             df_aux = df_aux.with_columns(pl.lit(frame).alias('frame'))
             blends_df = pl.concat([blends_df, df_aux])
         
-        blends_df.write_csv(target_analysis_folder + file_tag + ".csv")
+        blends_df.write_csv(au_analysis_file)
 
       #Export landmarks
       #lmks_df = pd.DataFrame()
