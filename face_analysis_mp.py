@@ -1,5 +1,5 @@
 import os
-os.environ['OPENBLAS_NUM_THREADS'] = '1'
+os.environ['OPENBLAS_NUM_THREADS'] = '8'
 
 from mediapipe import solutions
 from mediapipe.framework.formats import landmark_pb2
