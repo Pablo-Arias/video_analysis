@@ -85,6 +85,7 @@ def analyse_video(source
                   , target_au_video_folder   = "au_video/"
                   , target_AU_plots_folder   = "AU_bar_graph_folder/"
                   , combined_videos_folder   = "combined_videos_folder/"
+                  , target_processing_folder = "processing/"
                   , model_asset_path         = "face_landmarker_v2_with_blendshapes.task"
                   , output_face_blendshapes  = True
                   , num_faces                = 1
@@ -104,13 +105,12 @@ def analyse_video(source
   file_tag = os.path.splitext(os.path.basename(source))[0]
   target_frames_folder   = target_frames_folder   + file_tag + "/"
   target_AU_plots_folder = target_AU_plots_folder + file_tag + "/"
-
   au_analysis_file = target_analysis_folder + file_tag + ".csv"
-  if os.path.isfile(au_analysis_file):
-    print("File exists skipping for : " + source)
-    return  
+  processing_file = target_processing_folder + file_tag + ".csv"
 
   #Create folders needed
+  os.makedirs(target_processing_folder, exist_ok=True)
+
   if export_analysis:
     os.makedirs(target_analysis_folder, exist_ok=True)
   if export_tracked_frames:
@@ -127,6 +127,17 @@ def analyse_video(source
 
   if combine_AU_bargraphs_and_tracked_video:
     os.makedirs(combined_videos_folder, exist_ok=True)
+  
+  #Skip if analysis exists oor create processing file
+  if os.path.isfile(au_analysis_file):
+    print("Analysis already performed, skipping for : " + source)
+    return
+  elif os.path.isfile(processing_file):
+    print("Analysis beeing done by someone else, skipping for : " + source)
+    return
+  else:
+    #create processing file
+    open(processing_file, "a")
     
 
   #General
@@ -251,7 +262,10 @@ def analyse_video(source
      print("Deleting bar graphs")
      shutil.rmtree(target_AU_plots_folder)
 
+  #Delete processing file
+  os.remove(processing_file)
 
+  #Print finished
   print("Finished all for : " + source)
 
 
@@ -263,6 +277,7 @@ def analyse_video_parallel(sources
                   , target_au_video_folder   = "au_video/"
                   , target_AU_plots_folder   = "AU_bar_graph_folder/"
                   , combined_videos_folder   = "combined_videos_folder/"
+                  , target_processing_folder = "processing/"
                   , model_asset_path         = "face_landmarker_v2_with_blendshapes.task"
                   , output_face_blendshapes  = True
                   , num_faces                = 1
@@ -293,6 +308,7 @@ def analyse_video_parallel(sources
   os.makedirs(target_au_video_folder, exist_ok=True)
   os.makedirs(target_AU_plots_folder, exist_ok=True)
   os.makedirs(combined_videos_folder, exist_ok=True)
+  os.makedirs(target_processing_folder, exist_ok=True)
 
 
   import multiprocessing
@@ -307,6 +323,7 @@ def analyse_video_parallel(sources
                                         , repeat(target_au_video_folder)
                                         , repeat(target_AU_plots_folder)
                                         , repeat(combined_videos_folder)
+                                        , repeat(target_processing_folder)
                                         , repeat(model_asset_path)
                                         , repeat(output_face_blendshapes)
                                         , repeat(num_faces)
