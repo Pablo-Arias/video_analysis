@@ -178,11 +178,11 @@ def analyse_video(source
       detection_result = detector.detect_for_video(image, timestamp_ms = tt)
       detection_results[cpt] = detection_result
       
-      if export_tracked_frames:
+      if export_tracked_frames and detection_result:
         annotated_image = draw_landmarks_on_image(image.numpy_view(), detection_result)
         cv2.imwrite(target_frames_folder  +str(cpt)+".png", annotated_image)
 
-      if export_AU_bargraphs:
+      if export_AU_bargraphs and detection_result:
         fig = plot_face_blendshapes_bar_graph(detection_result.face_blendshapes[0])
         fig.savefig(target_AU_plots_folder+ str(cpt) + ".png")
         plt.close(fig)
@@ -201,7 +201,6 @@ def analyse_video(source
   elif len(detection_results)==0:
     print("Exiting analysis because no detection results for file : "+ file_tag)
     return
-  
 
   #Export analysis into a csv
   if export_analysis:
