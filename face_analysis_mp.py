@@ -157,9 +157,8 @@ def analyse_video(source
           , num_faces = num_faces
       )
 
-  #Run detection on each frame
+  #Run detection on each frame of video
   detector = vision.FaceLandmarker.create_from_options(options)
-
   cap = cv2.VideoCapture(source)
   fps = cap.get(cv2.CAP_PROP_FPS)
   cpt=0
@@ -190,10 +189,19 @@ def analyse_video(source
       
       cpt+=1
     else:
-      break
-        
+      break      
   cap.release()
-  print("Finished processing frames, processed "+ str(cpt) +" frames.")
+  print("Finished processing frames, processed "+ str(cpt) +" frames, for file : "+ file_tag)
+
+  # Sanity checks
+  #Check if something was done during analysis otherwise return
+  if cpt==0:
+    print("Exiting analysis because no frames were processed for file : "+ file_tag)
+    return
+  elif len(detection_results)==0:
+    print("Exiting analysis because no detection results for file : "+ file_tag)
+    return
+  
 
   #Export analysis into a csv
   if export_analysis:
@@ -236,7 +244,9 @@ def analyse_video(source
     audio_file = str(uuid.uuid1()) +"____.wav"
     extract_audio(source, audio_file)
     create_movie_from_frames(frame_name_tag=target_frames_folder, fps=fps, img_extension=".png" , target_video = target_video_folder + file_tag, preset="ultrafast", audio_file=audio_file)
-    os.remove(audio_file)
+
+    if os.path.isfile(audio_file):
+      os.remove(audio_file)
 
   if combine_AU_graphs_into_video:
     os.makedirs(target_video_folder, exist_ok=True)
@@ -245,7 +255,8 @@ def analyse_video(source
     audio_file = str(uuid.uuid1()) +"____.wav"
     extract_audio(source, audio_file)
     create_movie_from_frames(frame_name_tag=target_AU_plots_folder, fps=fps, img_extension=".png" , target_video = target_au_video_folder + file_tag, preset="ultrafast")
-    os.remove(audio_file)
+    if os.path.isfile(audio_file):
+      os.remove(audio_file)
 
   if combine_AU_bargraphs_and_tracked_video :
     left = target_au_video_folder + file_tag  
@@ -263,7 +274,8 @@ def analyse_video(source
      shutil.rmtree(target_AU_plots_folder)
 
   #Delete processing file
-  os.remove(processing_file)
+  if os.path.isfile(processing_file):
+    os.remove(processing_file)
 
   #Print finished
   print("Finished all for : " + source)
