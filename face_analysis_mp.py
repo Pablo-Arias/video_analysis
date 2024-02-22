@@ -178,11 +178,11 @@ def analyse_video(source
       detection_result = detector.detect_for_video(image, timestamp_ms = tt)
       detection_results[cpt] = detection_result
       
-      if export_tracked_frames and detection_result:
+      if export_tracked_frames and detection_result.face_landmarks:
         annotated_image = draw_landmarks_on_image(image.numpy_view(), detection_result)
         cv2.imwrite(target_frames_folder  +str(cpt)+".png", annotated_image)
 
-      if export_AU_bargraphs and detection_result:
+      if export_AU_bargraphs and detection_result.face_blendshapes:
         fig = plot_face_blendshapes_bar_graph(detection_result.face_blendshapes[0])
         fig.savefig(target_AU_plots_folder+ str(cpt) + ".png")
         plt.close(fig)
