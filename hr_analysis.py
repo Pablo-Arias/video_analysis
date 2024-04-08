@@ -53,7 +53,6 @@ def analyse_folder(sources, target_folder, wsize = 6, roi_approach = 'patches'
 			if method in ["HR_CNN", "MTTS_CAN"]:
 				pipe = DeepPipeline()          # object to execute the pipeline
 				res = pipe.run_on_video(file,
-											winsize=wsize, 
 											roi_method='convexhull',
 											roi_approach=roi_approach,
 											method=method,
