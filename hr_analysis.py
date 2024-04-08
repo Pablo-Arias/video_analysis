@@ -53,6 +53,9 @@ def analyse_folder(sources, target_folder, wsize = 6, roi_approach = 'patches'
 		#try:
 			# run
 		if method in ["HR_CNN", "MTTS_CAN"]:
+			#Patch to correct a pyvhr bug
+			import pyVHR.deepRPPG.mtts_can
+			pyVHR.deepRPPG.mtts_can.os = os
 			pipe = DeepPipeline()          # object to execute the pipeline
 			res = pipe.run_on_video(file,
 										method=method,
@@ -62,6 +65,8 @@ def analyse_folder(sources, target_folder, wsize = 6, roi_approach = 'patches'
 										)			
 		else:
 			pipe = Pipeline()          # object to execute the pipeline
+
+
 			res = pipe.run_on_video(file,
 										winsize=wsize, 
 										roi_method='convexhull',
