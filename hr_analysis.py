@@ -36,6 +36,9 @@ def analyse_folder(sources, target_folder, wsize = 6, roi_approach = 'patches'
 		bpm_est = 'clustering'     # BPM final estimate, if patches choose 'medians' or 'clustering'
 		method = 'cpu_CHROM'       # one of the methods implemented in pyVHR
 
+		For deep methods, check available parameters here : 
+			https://github.com/phuselab/pyVHR/blob/55cbdf9efc51977f9670520b7362e0f386de7e4b/pyVHR/analysis/pipeline.py#L811
+
 	"""
 
 	for file in glob.glob(sources):
