@@ -58,6 +58,10 @@ def analyse_folder(sources, target_folder, wsize = 6, roi_approach = 'patches'
 			import pyVHR.deepRPPG.mtts_can
 			pyVHR.deepRPPG.mtts_can.os = os
 			pyVHR.deepRPPG.mtts_can.requests = requests
+
+			import pyVHR.deepRPPG.hr_cnn
+			pyVHR.deepRPPG.hr_cnn.requests = requests
+			pyVHR.deepRPPG.hr_cnn.os = os
 			pipe = DeepPipeline()          # object to execute the pipeline
 			res = pipe.run_on_video(file,
 										method=method,
