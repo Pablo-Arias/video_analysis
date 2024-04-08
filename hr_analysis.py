@@ -1,6 +1,7 @@
 #Base distribution
 import os
 from os.path import exists
+import requests
 import glob
 import pickle
 import sys
@@ -56,6 +57,7 @@ def analyse_folder(sources, target_folder, wsize = 6, roi_approach = 'patches'
 			#Patch to correct a pyvhr bug
 			import pyVHR.deepRPPG.mtts_can
 			pyVHR.deepRPPG.mtts_can.os = os
+			pyVHR.deepRPPG.mtts_can.requests = requests
 			pipe = DeepPipeline()          # object to execute the pipeline
 			res = pipe.run_on_video(file,
 										method=method,
