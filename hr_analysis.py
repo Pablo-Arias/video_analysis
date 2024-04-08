@@ -36,6 +36,8 @@ def analyse_folder(sources, target_folder, wsize = 6, roi_approach = 'patches'
 		bpm_est = 'clustering'     # BPM final estimate, if patches choose 'medians' or 'clustering'
 		method = 'cpu_CHROM'       # one of the methods implemented in pyVHR
 
+		BEWARE for deep methods not all parameters work!!!
+
 		For deep methods, check available parameters here : 
 			https://github.com/phuselab/pyVHR/blob/55cbdf9efc51977f9670520b7362e0f386de7e4b/pyVHR/analysis/pipeline.py#L811
 
@@ -53,7 +55,6 @@ def analyse_folder(sources, target_folder, wsize = 6, roi_approach = 'patches'
 			if method in ["HR_CNN", "MTTS_CAN"]:
 				pipe = DeepPipeline()          # object to execute the pipeline
 				res = pipe.run_on_video(file,
-											roi_approach=roi_approach,
 											method=method,
 											post_filt=post_filt,
 											cuda=cuda, 
