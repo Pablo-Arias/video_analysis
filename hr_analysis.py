@@ -51,42 +51,43 @@ def analyse_folder(sources, target_folder, wsize = 6, roi_approach = 'patches'
 		if exists(target_file):
 			print(target_file + ' exists, skipping it')
 			continue
-		#try:
+		try:
 			# run
-		if method in ["HR_CNN", "MTTS_CAN"]:
-			#Patch to correct a pyvhr bug
-			#import pyVHR.deepRPPG.mtts_can
-			#pyVHR.deepRPPG.mtts_can.os = os
-			#pyVHR.deepRPPG.mtts_can.requests = requests
+			if method in ["HR_CNN", "MTTS_CAN"]:
+				#Patch to correct a pyvhr bug
+				#import pyVHR.deepRPPG.mtts_can
+				#pyVHR.deepRPPG.mtts_can.os = os
+				#pyVHR.deepRPPG.mtts_can.requests = requests
 
-			#import pyVHR.deepRPPG.hr_cnn
-			#pyVHR.deepRPPG.hr_cnn.requests = requests
-			#pyVHR.deepRPPG.hr_cnn.os = os
-			pipe = DeepPipeline()          # object to execute the pipeline
-			res = pipe.run_on_video(file,
-										method=method,
-										post_filt=post_filt,
-										cuda=cuda, 
-										verb=verb
-										)			
-		else:
-			pipe = Pipeline()          # object to execute the pipeline
+				#import pyVHR.deepRPPG.hr_cnn
+				#pyVHR.deepRPPG.hr_cnn.requests = requests
+				#pyVHR.deepRPPG.hr_cnn.os = os
+				pipe = DeepPipeline()          # object to execute the pipeline
+				res = pipe.run_on_video(file,
+											method=method,
+											post_filt=post_filt,
+											cuda=cuda, 
+											verb=verb,
+											wsize=wsize
+											)			
+			else:
+				pipe = Pipeline()          # object to execute the pipeline
 
 
-			res = pipe.run_on_video(file,
-										winsize=wsize, 
-										roi_method='convexhull',
-										roi_approach=roi_approach,
-										method=method,
-										estimate=bpm_est,
-										patch_size=0, 
-										RGB_LOW_HIGH_TH=(5,230),
-										Skin_LOW_HIGH_TH=(5,230),
-										pre_filt=pre_filt,
-										post_filt=post_filt,
-										cuda=cuda, 
-										verb=verb
-										)
+				res = pipe.run_on_video(file,
+											winsize=wsize, 
+											roi_method='convexhull',
+											roi_approach=roi_approach,
+											method=method,
+											estimate=bpm_est,
+											patch_size=0, 
+											RGB_LOW_HIGH_TH=(5,230),
+											Skin_LOW_HIGH_TH=(5,230),
+											pre_filt=pre_filt,
+											post_filt=post_filt,
+											cuda=cuda, 
+											verb=verb
+											)
 
 				# ERRORS
 				#RMSE, MAE, MAX, PCC, CCC, SNR = getErrors(bvps, fps, bpmES, bpmGT, timesES, timesGT)
@@ -102,13 +103,13 @@ def analyse_folder(sources, target_folder, wsize = 6, roi_approach = 'patches'
 			with open(target_file, 'wb') as handle:
 				pickle.dump(res, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-		# except KeyboardInterrupt:
-		# 	print("interrupted")
-		# 	sys.exit(0)
-		# except Exception as e:
-		# 	print("An error occured analsing : " + file)
-		# 	print(e)
-		# 	pass
+		except KeyboardInterrupt:
+			print("interrupted")
+			sys.exit(0)
+		except Exception as e:
+			print("An error occured analsing : " + file)
+			print(e)
+			pass
 
 
 if __name__ == "__main__":
