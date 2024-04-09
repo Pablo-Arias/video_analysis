@@ -101,6 +101,7 @@ def analyse_folder(sources, target_folder, wsize = 6, roi_approach = 'patches'
 				#res = [bvps, timeES, bpmES]
 
 			with open(target_file, 'wb') as handle:
+				print("saving analysis file...")
 				pickle.dump(res, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 		except KeyboardInterrupt:
