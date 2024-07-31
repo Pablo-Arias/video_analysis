@@ -1,7 +1,7 @@
 
 This tutorial runs you through step by step instructions of how to use the video analysis scripts to extract face features.
 
-#Conda environment
+# Conda environment
 First creaate your environment
 ```
 conda create --name mediapipe python=3.11
