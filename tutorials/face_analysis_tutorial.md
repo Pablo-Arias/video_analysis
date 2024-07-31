@@ -24,8 +24,6 @@ Then make sure that your folder has all the preprocessed videos (i.e. that the f
 
 Then try to run this code. Make sure to change the sources variable so that it points towards your preprocessed videos.
 
-Note that this will analyse each frame and export a new frame for each frame in the video being analysed. Thius is very tile consuming. If you just want to generate the results, you can put all visualization options to False(export_tracked_frames=False, delete_frames=False, delete_bar_graphs=False, create_tracked_video=False, combine_AU_graphs_into_video=False, combine_AU_graphs_into_video=False, combine_AU_bargraphs_and_tracked_video=False), in order to only create a csv file with all results. 
-
 ```
 from face_analysis_mp import analyse_video
 import glob
@@ -57,6 +55,8 @@ for file in glob.glob(sources):
                         , combine_AU_bargraphs_and_tracked_video = True
                         )
 ```
+
+Note that this will analyse each frame and export a new frame for each frame in the video being analysed. Thius is very tile consuming. If you just want to generate the results, you can put all visualization options to False(export_tracked_frames=False, delete_frames=False, delete_bar_graphs=False, create_tracked_video=False, combine_AU_graphs_into_video=False, combine_AU_graphs_into_video=False, combine_AU_bargraphs_and_tracked_video=False), in order to only create a csv file with all results. 
 
 
 # Run the code (in parallel)
