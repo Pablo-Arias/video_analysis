@@ -99,6 +99,35 @@ def analyse_video(source
                   , delete_frames  = True
                   , delete_bar_graphs = True
                   ):
+  """
+  parameters:
+      target_analysis_folder : The name of the csv folder where the csv file with the face analysis will be saved
+      target_frames_folder  : The name of the folder where the frames will be saved (to create a video, we need to create different frames, with e.g. face tracking results)
+      target_video_folder    : The name of the folder where the video with the tracking will be created.
+      target_au_video_folder   : The name of the folder where the video that recreates faces from AUs will be created
+      target_AU_plots_folder   : The name of the folder where the plots to create the video with AUs will be created
+      combined_videos_folder  : The name of the folder where the combined videos (with tracking and AUs will be created)
+      target_processing_folder :  The name of the folder where we will keep track f the videos being analysed at each time.
+      model_asset_path            : Default : “face_landmarker_v2_with_blendshapes.task”. Name of the the mediapipe model to use
+      output_face_blendshapes  : Default : True; If the model should compute blendhapes (e.g. smiling , frowning , etc...)
+      num_faces                = 1; Number of faces to detect in the video
+      export_tracked_frames    = True, If the script should export tracked frames.Tracked frames are visual representations of the faces with the landmarks within it..
+      export_AU_bargraphs      = True, If the script should create bar graphs and latter create a video with them . Bargraphs are visual representations of the blenshapes.
+      export_analysis          = True; If the scripts should create the csv file with the analysis of the face (some people want to just generate videos and not generate the csv file—not many though).
+      create_tracked_video     = True; If the script should create a tracked video from the tracked frames. This requires export_tracked_frames=True
+      combine_AU_graphs_into_video = True ; If the script should combine all bargraphs into one video. This requires export_AU_bargraphs=True
+      combine_AU_bargraphs_and_tracked_video = True; If the script should combine the bargraphs and tracked video together to create a video with both of the representations. This requires combine_AU_graphs_into_video = True, create_tracked_video  = True, export_tracked_frames=True, export_AU_bargraphs=True 
+      fps            = 25 : Number of frames per second in the video. Usually 25.
+      delete_frames  = True; If the script should deleted the frames after finishing so you can have only the videos (of the options to generate the videos are on). This is usefull because the frames take a lot of space.
+      delete_bar_graphs = True; If the script should delete the bargraphs after finishing so you can have only the videos (of the options to generate the videos are on). This is useful because the frames take a lot of space.
+
+
+    Concerning the "processing" files
+    If you have very long videos, tou should use analyse_video instead of analyse_video_parallel. It will be easier to handle memory wise.
+    But what you can do to perform computations in parallel, is that you can call that function several times on the HPC, the function will know which files the other functions currently running are being processed by checking inside the “processing” folder.
+
+    If you want a file to be re-analysed either delete it from the analysis folder or from the processing folder.
+  """
   
   print("Starting analysis for : " + source)
 
@@ -311,6 +340,33 @@ def analyse_video_parallel(sources
 
     if __name__ == '__main__':
         main()
+    parameters:
+      target_analysis_folder : The name of the csv folder where the csv file with the face analysis will be saved
+      target_frames_folder  : The name of the folder where the frames will be saved (to create a video, we need to create different frames, with e.g. face tracking results)
+      target_video_folder    : The name of the folder where the video with the tracking will be created.
+      target_au_video_folder   : The name of the folder where the video that recreates faces from AUs will be created
+      target_AU_plots_folder   : The name of the folder where the plots to create the video with AUs will be created
+      combined_videos_folder  : The name of the folder where the combined videos (with tracking and AUs will be created)
+      target_processing_folder :  The name of the folder where we will keep track f the videos being analysed at each time.
+      model_asset_path            : Default : “face_landmarker_v2_with_blendshapes.task”. Name of the the mediapipe model to use
+      output_face_blendshapes  : Default : True; If the model should compute blendhapes (e.g. smiling , frowning , etc...)
+      num_faces                = 1; Number of faces to detect in the video
+      export_tracked_frames    = True, If the script should export tracked frames.Tracked frames are visual representations of the faces with the landmarks within it..
+      export_AU_bargraphs      = True, If the script should create bar graphs and latter create a video with them . Bargraphs are visual representations of the blenshapes.
+      export_analysis          = True; If the scripts should create the csv file with the analysis of the face (some people want to just generate videos and not generate the csv file—not many though).
+      create_tracked_video     = True; If the script should create a tracked video from the tracked frames. This requires export_tracked_frames=True
+      combine_AU_graphs_into_video = True ; If the script should combine all bargraphs into one video. This requires export_AU_bargraphs=True
+      combine_AU_bargraphs_and_tracked_video = True; If the script should combine the bargraphs and tracked video together to create a video with both of the representations. This requires combine_AU_graphs_into_video = True, create_tracked_video  = True, export_tracked_frames=True, export_AU_bargraphs=True 
+      fps            = 25 : Number of frames per second in the video. Usually 25.
+      delete_frames  = True; If the script should deleted the frames after finishing so you can have only the videos (of the options to generate the videos are on). This is usefull because the frames take a lot of space.
+      delete_bar_graphs = True; If the script should delete the bargraphs after finishing so you can have only the videos (of the options to generate the videos are on). This is useful because the frames take a lot of space.
+
+
+    Concerning the "processing" files
+    If you have very long videos, tou should use analyse_video instead of analyse_video_parallel. It will be easier to handle memory wise.
+    But what you can do to perform computations in parallel, is that you can call that function several times on the HPC, the function will know which files the other functions currently running are being processed by checking inside the “processing” folder.
+
+    If you want a file to be re-analysed either delete it from the analysis folder or from the processing folder.
   """
 
   os.makedirs(target_analysis_folder, exist_ok=True)
