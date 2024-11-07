@@ -91,7 +91,8 @@ def analyse_video(source
                   , num_faces                = 1
                   , export_tracked_frames    = True
                   , export_AU_bargraphs      = True
-                  , export_analysis          = True
+                  , export_blendshapes       = True
+                  , export_lmks              = False
                   , create_tracked_video     = True
                   , combine_AU_graphs_into_video = True
                   , combine_AU_bargraphs_and_tracked_video = True
@@ -113,7 +114,8 @@ def analyse_video(source
       num_faces                = 1; Number of faces to detect in the video
       export_tracked_frames    = True, If the script should export tracked frames.Tracked frames are visual representations of the faces with the landmarks within it..
       export_AU_bargraphs      = True, If the script should create bar graphs and latter create a video with them . Bargraphs are visual representations of the blenshapes.
-      export_analysis          = True; If the scripts should create the csv file with the analysis of the face (some people want to just generate videos and not generate the csv file—not many though).
+      export_blendshapes          = True; If the scripts should create the csv file with the analysis of the face (some people want to just generate videos and not generate the csv file—not many though).
+      export_lmks              = False If the script should create a csv file with landmarks
       create_tracked_video     = True; If the script should create a tracked video from the tracked frames. This requires export_tracked_frames=True
       combine_AU_graphs_into_video = True ; If the script should combine all bargraphs into one video. This requires export_AU_bargraphs=True
       combine_AU_bargraphs_and_tracked_video = True; If the script should combine the bargraphs and tracked video together to create a video with both of the representations. This requires combine_AU_graphs_into_video = True, create_tracked_video  = True, export_tracked_frames=True, export_AU_bargraphs=True 
@@ -135,12 +137,13 @@ def analyse_video(source
   target_frames_folder   = target_frames_folder   + file_tag + "/"
   target_AU_plots_folder = target_AU_plots_folder + file_tag + "/"
   au_analysis_file = target_analysis_folder + file_tag + ".csv"
+  lmk_analysis_file = target_analysis_folder + file_tag + "_lmks.csv"
   processing_file = target_processing_folder + file_tag + ".csv"
 
   #Create folders needed
   os.makedirs(target_processing_folder, exist_ok=True)
 
-  if export_analysis:
+  if export_blendshapes or export_lmks:
     os.makedirs(target_analysis_folder, exist_ok=True)
   if export_tracked_frames:
     os.makedirs(target_frames_folder, exist_ok=True)
@@ -232,15 +235,17 @@ def analyse_video(source
     return
 
   #Export analysis into a csv
-  if export_analysis:
-    print("Exporting results")
-    blends_df = pl.DataFrame()
+  if export_blendshapes:
+    print("Exporting blendhsapes")
+    
+    #Export blndshapes
+    blend_df = pl.DataFrame()
     for frame in detection_results:
       detection_result = detection_results[frame]
       face_blendshapes = detection_result.face_blendshapes
       face_landmarks   = detection_result.face_landmarks
 
-      #Export blendshapes
+      #Create blendshape
       if face_blendshapes:
         for idx, category in enumerate(face_blendshapes[0]):
             category_name = category.category_name
@@ -249,20 +254,33 @@ def analyse_video(source
             df_aux = df_aux.with_columns(pl.lit(category_name).alias('blendshape'))
             df_aux = df_aux.with_columns(pl.lit(score).alias('score'))
             df_aux = df_aux.with_columns(pl.lit(frame).alias('frame'))
-            blends_df = pl.concat([blends_df, df_aux])
-        
-        blends_df.write_csv(au_analysis_file)
+            blend_df = pl.concat([blend_df, df_aux])
+    
+    blend_df.write_csv(au_analysis_file)
 
-      #Export landmarks
-      #lmks_df = pd.DataFrame()
-      #if  face_landmarks:
-      #  for idx, category in enumerate(face_landmarks[0]):
-      #    category_name = category.category_name
-      #    score = round(category.score, 2)
-      #    df_aux = pd.DataFrame()
-      #    df_aux["lnmk_nb"] = [category_name]
-      #    df_aux["frame"]    = [frame]
-      #    lmks_df = pd.concat([lmks_df, df_aux])  
+  #Export lmks
+  if export_lmks:
+    print("Exporting lmks")
+    lmks_df = pl.DataFrame()
+    for frame in detection_results:
+      detection_result = detection_results[frame]
+      face_landmarks   = detection_result.face_landmarks
+      # Export landmarks
+      if face_landmarks:
+        for idx, category in enumerate(face_landmarks[0]):
+          x = category.x
+          y = category.y
+          z = category.z
+          visibility = category.visibility
+          presence = category.presence
+          # Create a Polars DataFrame with the landmark name and frame number
+          df_aux = pl.DataFrame({"idx": idx, "x": [x],"y": [y],"z": [z],"visibility":visibility ,"presence": presence , "frame": [frame]})
+          # Concatenate the new rows to lmks_df
+          lmks_df = pl.concat([lmks_df, df_aux])
+
+    # Write the DataFrame to CSV
+    lmks_df.write_csv(lmk_analysis_file)
+
 
   #Create video with frames
   if create_tracked_video:
@@ -323,7 +341,8 @@ def analyse_video_parallel(sources
                   , num_faces                = 1
                   , export_tracked_frames    = True
                   , export_AU_bargraphs      = True
-                  , export_analysis          = True
+                  , export_blendshapes          = True
+                  , export_lmks              = False
                   , create_tracked_video     = True
                   , combine_AU_graphs_into_video = True
                   , combine_AU_bargraphs_and_tracked_video = True
@@ -353,7 +372,8 @@ def analyse_video_parallel(sources
       num_faces                = 1; Number of faces to detect in the video
       export_tracked_frames    = True, If the script should export tracked frames.Tracked frames are visual representations of the faces with the landmarks within it..
       export_AU_bargraphs      = True, If the script should create bar graphs and latter create a video with them . Bargraphs are visual representations of the blenshapes.
-      export_analysis          = True; If the scripts should create the csv file with the analysis of the face (some people want to just generate videos and not generate the csv file—not many though).
+      export_blendshapes          = True; If the scripts should create the csv file with the analysis of the face (some people want to just generate videos and not generate the csv file—not many though).
+      export_lmks              = False. If the script should create a csv file with landmarks
       create_tracked_video     = True; If the script should create a tracked video from the tracked frames. This requires export_tracked_frames=True
       combine_AU_graphs_into_video = True ; If the script should combine all bargraphs into one video. This requires export_AU_bargraphs=True
       combine_AU_bargraphs_and_tracked_video = True; If the script should combine the bargraphs and tracked video together to create a video with both of the representations. This requires combine_AU_graphs_into_video = True, create_tracked_video  = True, export_tracked_frames=True, export_AU_bargraphs=True 
@@ -396,7 +416,8 @@ def analyse_video_parallel(sources
                                         , repeat(num_faces)
                                         , repeat(export_tracked_frames)
                                         , repeat(export_AU_bargraphs)
-                                        , repeat(export_analysis)
+                                        , repeat(export_blendshapes)
+                                        , repeat(export_lmks)
                                         , repeat(create_tracked_video)
                                         , repeat(combine_AU_graphs_into_video)
                                         , repeat(combine_AU_bargraphs_and_tracked_video)

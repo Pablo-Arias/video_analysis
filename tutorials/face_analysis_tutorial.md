@@ -48,7 +48,8 @@ for file in glob.glob(sources):
                         , export_tracked_frames    = True
                         , delete_frames            = True
                         , delete_bar_graphs        = True
-                        , export_analysis          = True
+                        , export_blendshapes       = True
+                        , export_lmks              = False
                         , export_AU_bargraphs      = True
                         , create_tracked_video     = True
                         , combine_AU_graphs_into_video = True
@@ -56,7 +57,7 @@ for file in glob.glob(sources):
                         )
 ```
 
-Note that this will analyse each frame and export a new frame for each frame in the video being analysed. Thius is very tile consuming. If you just want to generate the results, you can put all visualization options to False(export_tracked_frames=False, delete_frames=False, delete_bar_graphs=False, create_tracked_video=False, combine_AU_graphs_into_video=False, combine_AU_graphs_into_video=False, combine_AU_bargraphs_and_tracked_video=False), in order to only create a csv file with all results. 
+Note that this will analyse each frame and export a new frame for each frame in the video being analysed. This is very time consuming. If you just want to generate the results, you can put all visualization options to False(export_tracked_frames=False, delete_frames=False, delete_bar_graphs=False, create_tracked_video=False, combine_AU_graphs_into_video=False, combine_AU_graphs_into_video=False, combine_AU_bargraphs_and_tracked_video=False). To only create a csv file with all results put either or both export_blendshapes and export_lmks to True.
 
 
 # Run the code (in parallel)
@@ -76,7 +77,8 @@ detection_results = analyse_video_parallel(sources= "preproc/prolific/*/trimed/*
                                    , export_tracked_frames    = True
                                    , delete_frames            = True
                                    , delete_bar_graphs        = True
-                                   , export_analysis          = True
+                                   , export_blendshapes       = True
+                                   , export_lmks              = False
                                    , export_AU_bargraphs      = True
                                    , create_tracked_video     = True
                                    , combine_AU_graphs_into_video = True
