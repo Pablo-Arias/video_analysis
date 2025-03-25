@@ -65,7 +65,9 @@ Note that this will analyse each frame and export a new frame for each frame in 
 You can also run these scripts in parallel cores using the analyse_video_parallel if needed.
 ```
 from face_analysis_mp import analyse_video_parallel
-detection_results = analyse_video_parallel(sources= "preproc/prolific/*/trimed/*/*.mp4"
+
+if __name__ == '__main__':
+    detection_results = analyse_video_parallel(sources= "preproc/prolific/*/trimed/*/*.mp4"
                                    , target_analysis_folder   = "mp/au_analysis/"
                                    , target_frames_folder     = "mp/tracked/"
                                    , target_video_folder      = "mp/tracked_video/"

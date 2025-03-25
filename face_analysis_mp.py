@@ -260,23 +260,42 @@ def analyse_video(source
 
   #Export lmks
   if export_lmks:
-    print("Exporting lmks")
-    lmks_df = pl.DataFrame()
-    for frame in detection_results:
-      detection_result = detection_results[frame]
-      face_landmarks   = detection_result.face_landmarks
-      # Export landmarks
+    print("Exporting landmarks")
+
+    # Initialize lists to hold the data for all frames
+    indices = []
+    x_vals = []
+    y_vals = []
+    z_vals = []
+    visibility_vals = []
+    presence_vals = []
+    frames = []
+
+    for frame, detection_result in detection_results.items():
+      face_landmarks = detection_result.face_landmarks
+
+      # Export landmarks if they exist
       if face_landmarks:
         for idx, category in enumerate(face_landmarks[0]):
-          x = category.x
-          y = category.y
-          z = category.z
-          visibility = category.visibility
-          presence = category.presence
-          # Create a Polars DataFrame with the landmark name and frame number
-          df_aux = pl.DataFrame({"idx": idx, "x": [x],"y": [y],"z": [z],"visibility":visibility ,"presence": presence , "frame": [frame]})
-          # Concatenate the new rows to lmks_df
-          lmks_df = pl.concat([lmks_df, df_aux])
+          # Use getattr to handle missing attributes safely
+          indices.append(idx)
+          x_vals.append(getattr(category, "x", None))
+          y_vals.append(getattr(category, "y", None))
+          z_vals.append(getattr(category, "z", None))
+          visibility_vals.append(getattr(category, "visibility", None))
+          presence_vals.append(getattr(category, "presence", None))
+          frames.append(frame)
+
+    # Build the DataFrame in one step
+    lmks_df = pl.DataFrame({
+        "idx": indices,
+        "x": x_vals,
+        "y": y_vals,
+        "z": z_vals,
+        "visibility": visibility_vals,
+        "presence": presence_vals,
+        "frame": frames
+    })
 
     # Write the DataFrame to CSV
     lmks_df.write_csv(lmk_analysis_file)
