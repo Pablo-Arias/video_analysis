@@ -238,25 +238,27 @@ def analyse_video(source
   if export_blendshapes:
     print("Exporting blendhsapes")
     
-    #Export blndshapes
-    dfs = []
-    for frame in detection_results:
-      detection_result = detection_results[frame]
-      face_blendshapes = detection_result.face_blendshapes
-      face_landmarks   = detection_result.face_landmarks
+    frames, blendshapes, scores = [], [], []
+    for frame, det in detection_results.items():
+        if not det.face_blendshapes:         # skip empty frames
+            continue
+        for cat in det.face_blendshapes[0]:  # first face only
+            frames.append(frame)
+            blendshapes.append(cat.category_name)
+            scores.append(cat.score)         # round later
 
-      #Create blendshape
-      if face_blendshapes:
-        for idx, category in enumerate(face_blendshapes[0]):
-            category_name = category.category_name
-            score = round(category.score, 2)
-            df_aux = pl.DataFrame()
-            df_aux = df_aux.with_columns(pl.lit(category_name).alias('blendshape'))
-            df_aux = df_aux.with_columns(pl.lit(score).alias('score'))
-            df_aux = df_aux.with_columns(pl.lit(frame).alias('frame'))
-            dfs.append(df_aux)
-            
-    blend_df = pl.concat(dfs)
+    blend_df = (
+        pl.DataFrame(
+            {"frame": frames,
+            "blendshape": blendshapes,
+            "score": scores},
+            schema={"frame": pl.Int64,
+                    "blendshape": pl.Utf8,
+                    "score": pl.Float32},    # shrink to 32-bit
+        )
+        .with_columns(pl.col("score").round(2))
+    )
+
     blend_df.write_csv(au_analysis_file)
 
   #Export lmks
