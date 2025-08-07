@@ -239,7 +239,7 @@ def analyse_video(source
     print("Exporting blendhsapes")
     
     #Export blndshapes
-    blend_df = pl.DataFrame()
+    dfs = []
     for frame in detection_results:
       detection_result = detection_results[frame]
       face_blendshapes = detection_result.face_blendshapes
@@ -254,8 +254,9 @@ def analyse_video(source
             df_aux = df_aux.with_columns(pl.lit(category_name).alias('blendshape'))
             df_aux = df_aux.with_columns(pl.lit(score).alias('score'))
             df_aux = df_aux.with_columns(pl.lit(frame).alias('frame'))
-            blend_df = pl.concat([blend_df, df_aux])
-    
+            dfs.append(df_aux)
+            
+    blend_df = pl.concat(dfs)
     blend_df.write_csv(au_analysis_file)
 
   #Export lmks
