@@ -56,6 +56,8 @@ def transcribe_audio_file_time_stamps(file, transcription_path="transcribed/"
     """
     Check transcription arguments here: https://github.com/linto-ai/whisper-timestamped#light-installation-for-cpu
     """
+    import whisper_timestamped as whisper
+    import json
     print("Analysing : " + file, flush=True)
     
     # Handle file names (removed the duplicate declaration further down)
