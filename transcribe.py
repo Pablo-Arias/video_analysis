@@ -41,45 +41,46 @@ def transcribe_video_file(file, transcription_path="transcribed/", audio_path= "
     text_file.close()
 
 def transcribe_audio_file_time_stamps(file, transcription_path="transcribed/"
-                                      , model_type= "large"
-                                      , language="En"
+                                      , model_type= "large-v3"
+                                      , language="French"
                                       , device="cpu"
-                                      , temperature = (0.0, 0.2, 0.4, 0.6, 0.8, 1.0)
-                                      , best_of=5
-                                      , beam_size=5
-                                      , vad="auditok"
+                                      , temperature = (0.0, 0.1, 0.2, 0.4)
+                                      , best_of=10
+                                      , beam_size=10
+                                      , vad="silero"
                                       , detect_disfluencies=True
                                       , initial_prompt = ""
+                                      , condition_on_previous_text = False
+                                      , patience = 2.0
                                       ):
     """
-    Check transcription arguiments here: https://github.com/linto-ai/whisper-timestamped#light-installation-for-cpu
+    Check transcription arguments here: https://github.com/linto-ai/whisper-timestamped#light-installation-for-cpu
     """
-    import whisper_timestamped as whisper
-    import json
-
     print("Analysing : " + file, flush=True)
     
+    # Handle file names (removed the duplicate declaration further down)
     file_tag = get_file_without_path(file)
-    target_path = transcription_path + file_tag + ".txt"
+    
+    # Safely construct the path
+    target_path = os.path.join(transcription_path, file_tag + ".txt")
+    
     if os.path.isfile(target_path):
         print("Skipping this file because it exists already  : " + target_path, flush=True)
         return
-    
-    #Create empty results file, to say that we are in the process of anlysing it
-    open(target_path, "a")
-
-    #handle file names
-    file_tag = get_file_without_path(file)
     
     if not os.path.isfile(file):
         print("The file could not be read, returning. File : " + file)
         return
     
-    #Speech to text
+    # Create empty results file, to say that we are in the process of analysing it
+    # Added .close() to prevent leaving a dangling file pointer in memory
+    open(target_path, "a").close() 
+
+    # Speech to text
     audio = whisper.load_audio(file)
     model = whisper.load_model(model_type, device=device)
 
-    
+    # Pass all the new extreme-accuracy arguments into the transcribe call
     result = whisper.transcribe(model, audio
                                 , language=language
                                 , beam_size=beam_size
@@ -88,15 +89,16 @@ def transcribe_audio_file_time_stamps(file, transcription_path="transcribed/"
                                 , vad=vad
                                 , detect_disfluencies=detect_disfluencies
                                 , initial_prompt = initial_prompt
+                                , condition_on_previous_text = condition_on_previous_text
+                                , patience = patience
                                 )
 
     output = json.dumps(result, indent = 2, ensure_ascii = False)
     print(output, flush=True)
     
-    #Write results
-    text_file = open(target_path, "w")
-    text_file.write(output)
-    text_file.close()
+    # Write results safely using a context manager and enforcing UTF-8
+    with open(target_path, "w", encoding="utf-8") as text_file:
+        text_file.write(output)
 
 def transcribe_video_file_time_stamps(file, transcription_path="transcribed/"
                                       , audio_path= "extracted_audio/"
