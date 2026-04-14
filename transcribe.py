@@ -113,6 +113,9 @@ def transcribe_video_file_time_stamps(file, transcription_path="transcribed/"
                                       , beam_size=5
                                       , vad="auditok"
                                       , detect_disfluencies=True
+                                      , initial_prompt = ""
+                                      , condition_on_previous_text = False
+                                      , patience = 2.0
                                       ):
     """
     Check transcription arguiments here: https://github.com/linto-ai/whisper-timestamped#light-installation-for-cpu
@@ -148,7 +151,10 @@ def transcribe_video_file_time_stamps(file, transcription_path="transcribed/"
     model = whisper.load_model(model_type, device=device)
 
     
-    result = whisper.transcribe(model, audio, language=language, beam_size=beam_size, best_of=best_of, temperature=temperature, vad=vad, detect_disfluencies=detect_disfluencies)
+    result = whisper.transcribe(model, audio
+                                , language=language, beam_size=beam_size, best_of=best_of, temperature=temperature, vad=vad, detect_disfluencies=detect_disfluencies
+                                , initial_prompt = initial_prompt, condition_on_previous_text= condition_on_previous_text, patience=patience
+                                )
 
     output = json.dumps(result, indent = 2, ensure_ascii = False)
     print(output, flush=True)
