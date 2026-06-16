@@ -19,9 +19,11 @@ from conversions import get_file_without_path
 def analyse_folder(sources, target_folder, wsize = 6, roi_approach = 'patches'
 				   , bpm_est = 'clustering', method = 'cpu_CHROM'
 				   , pre_filt = True
-				   , post_filt= True
+				   , post_filt= True #Make sure to leave this to tree if you want the post filterinf to take place
 				   , cuda=True
 				   , verb=True
+				   , minHz= 0.65
+				   , maxHz= 2.5 # For social interactions 2.5*60=150BPM is already a lot
 				   ):
 	"""
 		Analyse the source and save datatrame results in target folder
@@ -44,6 +46,13 @@ def analyse_folder(sources, target_folder, wsize = 6, roi_approach = 'patches'
 
 	"""
 
+	# Globally override the bandpass filter limits for all pipeline instances
+	Pipeline.minHz = minHz
+	Pipeline.maxHz = maxHz
+	DeepPipeline.minHz = minHz
+	DeepPipeline.maxHz = maxHz
+
+	#Perform computations
 	for file in glob.glob(sources):
 		file_tag = get_file_without_path(file)
 		target_file = target_folder + file_tag + ".pickle"
@@ -116,4 +125,4 @@ def analyse_folder(sources, target_folder, wsize = 6, roi_approach = 'patches'
 if __name__ == "__main__":
 	sources = "/home/pabloas/projects/open_source_AU/data_analysis/data/sharpened_db/*/*.mp4"
 	target_folder = "aanalysis/"
-	analyse_videos(sources, target_folder)
+	analyse_folder(sources, target_folder)
