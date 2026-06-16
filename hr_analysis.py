@@ -54,6 +54,8 @@ def analyse_folder(sources, target_folder, wsize = 6, roi_approach = 'patches'
 
 	#Perform computations
 	for file in glob.glob(sources):
+		if verb:
+			print("Starting Analysis of File : file", flush=True)
 		file_tag = get_file_without_path(file)
 		target_file = target_folder + file_tag + ".pickle"
 
@@ -110,7 +112,7 @@ def analyse_folder(sources, target_folder, wsize = 6, roi_approach = 'patches'
 				#res = [bvps, timeES, bpmES]
 
 			with open(target_file, 'wb') as handle:
-				print("saving analysis file...")
+				print("saving analysis file...", flush=True)
 				pickle.dump(res, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 		except KeyboardInterrupt:
