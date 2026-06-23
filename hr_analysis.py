@@ -11,8 +11,6 @@ from pyVHR.analysis.pipeline import Pipeline
 from pyVHR.plot.visualize import *
 from pyVHR.utils.errors import getErrors, printErrors, displayErrors
 
-from pyVHR.analysis.pipeline import DeepPipeline
-
 #Local Scripts
 from conversions import get_file_without_path
 
@@ -24,6 +22,8 @@ def analyse_folder(sources, target_folder, wsize = 6, roi_approach = 'patches'
 				   , verb=True
 				   , minHz= 0.65
 				   , maxHz= 2.5 # For social interactions 2.5*60=150BPM is already a lot
+				   , remove_result_file_if_crashed=False
+				   , patch_size=35
 				   ):
 	"""
 		Analyse the source and save datatrame results in target folder
@@ -49,8 +49,6 @@ def analyse_folder(sources, target_folder, wsize = 6, roi_approach = 'patches'
 	# Globally override the bandpass filter limits for all pipeline instances
 	Pipeline.minHz = minHz
 	Pipeline.maxHz = maxHz
-	DeepPipeline.minHz = minHz
-	DeepPipeline.maxHz = maxHz
 
 	#Perform computations
 	for file in glob.glob(sources):
@@ -62,9 +60,17 @@ def analyse_folder(sources, target_folder, wsize = 6, roi_approach = 'patches'
 		if exists(target_file):
 			print(target_file + ' exists, skipping it')
 			continue
+		else:
+			#create an empty file to show we are processing this
+			with open(target_file, "w") as f:
+				pass
+
 		try:
 			# run
 			if method in ["HR_CNN", "MTTS_CAN"]:
+				from pyVHR.analysis.pipeline import DeepPipeline
+				DeepPipeline.minHz = minHz
+				DeepPipeline.maxHz = maxHz
 				#Patch to correct a pyvhr bug
 				#import pyVHR.deepRPPG.mtts_can
 				#pyVHR.deepRPPG.mtts_can.os = os
@@ -83,15 +89,13 @@ def analyse_folder(sources, target_folder, wsize = 6, roi_approach = 'patches'
 											)			
 			else:
 				pipe = Pipeline()          # object to execute the pipeline
-
-
 				res = pipe.run_on_video(file,
 											winsize=wsize, 
 											roi_method='convexhull',
 											roi_approach=roi_approach,
 											method=method,
 											estimate=bpm_est,
-											patch_size=0, 
+											patch_size=patch_size, 
 											RGB_LOW_HIGH_TH=(5,230),
 											Skin_LOW_HIGH_TH=(5,230),
 											pre_filt=pre_filt,
@@ -121,6 +125,9 @@ def analyse_folder(sources, target_folder, wsize = 6, roi_approach = 'patches'
 		except Exception as e:
 			print("An error occured analsing : " + file)
 			print(e)
+			# Remove the empty placeholder file so this video isn't permanently skipped
+			if os.path.exists(target_file) and remove_result_file_if_crashed:
+				os.remove(target_file)
 			pass
 
 
