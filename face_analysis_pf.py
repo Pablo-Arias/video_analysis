@@ -17,6 +17,39 @@ from feat.utils.io import read_feat
 #Local Scripts
 from conversions import get_file_without_path
 
+#py-feat video loading
+import av
+import torch
+import feat.detector
+from feat.data import VideoDataset
+
+class SequentialVideoDataset(VideoDataset):
+	"""
+		Same frames as py-feat's VideoDataset, but each video is decoded only once, in order.
+		py-feat's VideoDataset reopens the video and decodes it from the first frame for every frame it loads,
+		so a 7500 frames video needs ~28 million frame decodings instead of 7500.
+		The decoder, the frames and the rgb24 conversion are the same, so the results are identical.
+	"""
+	def load_frame(self, idx):
+		frame_idx = int(self.video_frames[idx])
+
+		#Open the video the first time, or again if a frame before the current position is requested
+		if getattr(self, "next_frame", None) is None or frame_idx < self.next_frame:
+			if getattr(self, "container", None) is not None:
+				self.container.close()
+			self.container = av.open(self.file_name)
+			self.frames = self.container.decode(self.container.streams.video[0])
+			self.next_frame = 0
+
+		#Decode forward until the requested frame (skips frames when skip_frames > 1 or with several workers)
+		for i in range(frame_idx - self.next_frame):
+			next(self.frames)
+		frame = next(self.frames)
+		self.next_frame = frame_idx + 1
+
+		frame_data = torch.from_numpy(frame.to_ndarray(format="rgb24"))
+		return frame_data, frame_idx
+
 def analyse_videos(sources, target_folder
 						, skip_frames=1
 						, batch_size=900
@@ -29,6 +62,9 @@ def analyse_videos(sources, target_folder
 						, emotion_model = "resmasknet"
 						, facepose_model = "img2pose"
 						, device = "cuda"
+						, sequential_decoding = True
+						, task_id = None
+						, n_tasks = None
 						):
 	"""
 		Analyse the source and save datatrame results in target folder
@@ -40,8 +76,15 @@ def analyse_videos(sources, target_folder
 
 		Check detector parameters here : https://py-feat.org/pages/api.html
 
+		sequential_decoding : decode each video once, in order (same results as py-feat, much faster, see SequentialVideoDataset)
+		task_id, n_tasks : to split the videos between several jobs (e.g. a slurm array) : this job analyses every n_tasks-th video, starting at task_id
+
 	"""
-	
+
+	#Use the sequential video loader inside py-feat's detect_video
+	if sequential_decoding:
+		feat.detector.VideoDataset = SequentialVideoDataset
+
 	#New detector
 	detector = Detector(
 	    face_model       = face_model,
@@ -56,7 +99,12 @@ def analyse_videos(sources, target_folder
 	except:
 		pass
 
-	for file in glob.glob(sources):
+	#Videos analysed by this job
+	files = sorted(glob.glob(sources))
+	if task_id is not None:
+		files = files[task_id::n_tasks]
+
+	for file in files:
 		try:
 			file_tag = get_file_without_path(file)
 			target_file = target_folder + file_tag + ".csv"
